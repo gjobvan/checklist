@@ -72,18 +72,41 @@
         .header-emoji {
             font-size: 38px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
         }
-        #program-name-container { display: flex; justify-content: center; align-items: center; }
+        
+        /* 입력 버튼 컨테이너 (세로 정렬) */
+        #info-container { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; }
+        
         #program-name-btn {
             background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa; border-radius: 8px; padding: 6px 14px;
+            color: #60a5fa; border-radius: 8px;
             font-size: 14px; font-weight: 600; font-family: inherit;
             cursor: pointer; transition: all 0.2s;
+            padding: 0 16px !important;
+            height: 40px !important; /* 이모지에 의해 밀리지 않도록 크기 확장 및 강제 고정 */
+            line-height: 40px !important; 
+            box-sizing: border-box !important;
+            display: inline-flex; align-items: center; justify-content: center;
         }
         #program-name-btn:hover { background: rgba(59, 130, 246, 0.25); }
-        .program-name-display {
+        
+        /* 장소 버튼 (초록색 테마) */
+        #location-name-btn {
+            background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399; border-radius: 8px;
+            font-size: 14px; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: all 0.2s;
+            padding: 0 16px !important;
+            height: 40px !important; /* 이모지에 의해 밀리지 않도록 크기 확장 및 강제 고정 */
+            line-height: 40px !important; 
+            box-sizing: border-box !important;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        #location-name-btn:hover { background: rgba(16, 185, 129, 0.25); }
+
+        .program-name-display, .location-name-display {
             background: linear-gradient(135deg, #ffffff, #cbd5e1);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-size: 16.5px; font-weight: 800; cursor: pointer;
+            font-size: 16.5px; font-weight: 800; cursor: pointer; text-align: center;
         }
 
         /* ---------------- 컨트롤 버튼 ---------------- */
@@ -249,7 +272,7 @@
             align-items: center !important; padding: 40px 20px !important;
         }
         .pdf-export-mode .container { width: 100% !important; max-width: 1100px !important; margin: 0 !important; }
-        .pdf-export-mode .header-text, .pdf-export-mode .program-name-display {
+        .pdf-export-mode .header-text, .pdf-export-mode .program-name-display, .pdf-export-mode .location-name-display {
             background: none !important; -webkit-text-fill-color: #f8fafc !important; color: #f8fafc !important;
         }
 
@@ -301,8 +324,13 @@
                 </h1>
                 <div class="progress-wrapper-right"></div>
             </div>
-            <div id="program-name-container">
-                <button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>
+            <div id="info-container">
+                <div id="program-name-container">
+                    <button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>
+                </div>
+                <div id="location-name-container">
+                    <button id="location-name-btn" onclick="openLocationModal()">📍 장소를 입력해 주세요</button>
+                </div>
             </div>
         </div>
         <div class="grid" id="checklist-container"></div>
@@ -317,6 +345,18 @@
         <div class="modal-actions">
             <button class="modal-btn btn-cancel" onclick="closeModal('program-modal')">취소</button>
             <button class="modal-btn btn-save" onclick="applyProgramName()">확인</button>
+        </div>
+    </div>
+</div>
+
+<!-- 장소 입력 모달 추가 -->
+<div id="location-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>장소 입력</h3>
+        <input type="text" id="modal-location-input" class="modal-input" placeholder="예: 상암동 월드컵 경기장">
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" onclick="closeModal('location-modal')">취소</button>
+            <button class="modal-btn btn-save" onclick="applyLocationName()">확인</button>
         </div>
     </div>
 </div>
@@ -336,7 +376,7 @@
 <div id="reset-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content text-center">
         <h3>초기화</h3>
-        <p style="color: var(--text-sub); margin-bottom: 24px; font-size: 15px; line-height: 1.5;">작성된 모든 메모와 프로그램명, 체크 내역을<br>초기화 하시겠습니까?</p>
+        <p style="color: var(--text-sub); margin-bottom: 24px; font-size: 15px; line-height: 1.5;">작성된 모든 메모와 프로그램명, 장소, 체크 내역을<br>초기화 하시겠습니까?</p>
         <div class="modal-actions center">
             <button class="modal-btn btn-cancel" onclick="closeModal('reset-modal')">취소</button>
             <button class="modal-btn btn-danger" onclick="executeReset()">초기화</button>
@@ -395,6 +435,7 @@
         {
             title: "협조사항", icon: "🤝", theme: "#10b981",
             items: [
+                { text: "연락처", subItems: ["현장 시설, 행사 담당자"] },
                 { text: "주차", subItems: ["전날, 당일, 다음날"] },
                 { text: "장비 설치" },
                 { text: "장소 출입" }
@@ -420,6 +461,7 @@
      * ==========================================
      */
     let currentProgramName = ""; 
+    let currentLocationName = ""; // 장소 변수 추가
     let categoryMemos = []; 
     let categoryChecked = []; // 새롭게 추가된 체크 상태 저장 배열
     let currentCategoryIndex = -1; 
@@ -447,7 +489,30 @@
         if (currentProgramName) {
             container.innerHTML = `<span class="program-name-display" onclick="openProgramModal()" title="수정하려면 클릭하세요">${currentProgramName}</span>`;
         } else {
-            container.innerHTML = `<button id="program-name-btn" onclick="openProgramModal()">어떤 프로그램인가요?</button>`;
+            container.innerHTML = `<button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>`;
+        }
+    }
+
+    // 장소 모달 로직 추가
+    function openLocationModal() {
+        document.getElementById('modal-location-input').value = currentLocationName;
+        document.getElementById('location-modal').style.display = 'flex';
+        document.getElementById('modal-location-input').focus();
+    }
+    
+    function applyLocationName() {
+        currentLocationName = document.getElementById('modal-location-input').value.trim();
+        updateLocationDisplay();
+        saveAndUpdate();
+        closeModal('location-modal');
+    }
+
+    function updateLocationDisplay() {
+        const container = document.getElementById('location-name-container');
+        if (currentLocationName) {
+            container.innerHTML = `<span class="location-name-display" onclick="openLocationModal()" title="수정하려면 클릭하세요">📍 ${currentLocationName}</span>`;
+        } else {
+            container.innerHTML = `<button id="location-name-btn" onclick="openLocationModal()">📍 장소를 입력해 주세요</button>`;
         }
     }
 
@@ -531,8 +596,10 @@
         categoryMemos = new Array(checklistData.length).fill().map(() => []);
         categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); // 체크 해제 반영
         currentProgramName = "";
+        currentLocationName = ""; // 장소 리셋 추가
         
         updateProgramDisplay();
+        updateLocationDisplay();  // 장소 디스플레이 리셋 추가
         updateAllMemoDisplays();
         
         // 화면상에 있는 모든 취소선/체크 디자인 즉시 리셋
@@ -562,7 +629,8 @@
 
     // 단축키 제어
     document.addEventListener('keydown', function(e) {
-        const modals = ['program-modal', 'memo-modal', 'reset-modal', 'alert-modal'];
+        // location-modal 추가
+        const modals = ['program-modal', 'location-modal', 'memo-modal', 'reset-modal', 'alert-modal'];
         const openModalId = modals.find(id => document.getElementById(id).style.display === 'flex');
 
         if (e.key === 'Escape' && openModalId) closeModal(openModalId);
@@ -570,6 +638,7 @@
         if (e.key === 'Enter' && openModalId && openModalId !== 'memo-modal') {
             e.preventDefault();
             if (openModalId === 'program-modal') applyProgramName();
+            else if (openModalId === 'location-modal') applyLocationName();
             else if (openModalId === 'reset-modal') executeReset();
             else if (openModalId === 'alert-modal') {
                 const actions = document.getElementById('alert-modal-actions').innerHTML;
@@ -644,6 +713,7 @@
             localStorage.setItem('surveyChecklistStateV8', JSON.stringify({ 
                 memos: categoryMemos, 
                 programName: currentProgramName,
+                locationName: currentLocationName, // 장소 저장 추가
                 checked: categoryChecked 
             }));
         } catch (error) {
@@ -652,13 +722,21 @@
     }
 
     function loadState() {
-        const savedState = JSON.parse(localStorage.getItem('surveyChecklistStateV8'));
+        let savedState = null;
+        try {
+            const rawData = localStorage.getItem('surveyChecklistStateV8');
+            if (rawData) savedState = JSON.parse(rawData);
+        } catch(error) {}
         
         if (savedState) {
             if (savedState.memos) categoryMemos = savedState.memos;
             if (savedState.programName) {
                 currentProgramName = savedState.programName;
                 updateProgramDisplay();
+            }
+            if (savedState.locationName) { // 장소 로드 추가
+                currentLocationName = savedState.locationName;
+                updateLocationDisplay();
             }
             // 기존 사용자 호환성 유지: 체크 데이터가 있으면 가져옴
             if (savedState.checked) {
