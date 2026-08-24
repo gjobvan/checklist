@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중계 사전답사 체크리스트</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root, #pdf-wrapper {
+            --bg-color: #0b0d14;
+            --card-bg: #1e2029;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        /* ---------------- 공통 및 배경 ---------------- */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+            margin: 0;
+            padding: 40px 20px 80px; 
+            min-height: 100vh;
+            line-height: 1.4;
+        }
+        @supports (padding: env(safe-area-inset-top)) {
+            body {
+                padding: env(safe-area-inset-top, 40px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 80px) env(safe-area-inset-left, 20px);
+                min-height: 100dvh;
+            }
+        }
+        button, input, textarea {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ---------------- 헤더 ---------------- */
+        .header { text-align: center; margin-bottom: 24px; }
+        .header-main-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px; width: 100%;
+        }
+        .header-spacer, .progress-wrapper-right { flex: 1; }
+        .header h1 {
+            flex: 0 0 auto; font-size: 34px; font-weight: 800; margin: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 12px; white-space: nowrap;
+        }
+        .header-text {
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-emoji {
+            font-size: 38px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+        }
+        #program-name-container { display: flex; justify-content: center; align-items: center; }
+        #program-name-btn {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; border-radius: 8px; padding: 6px 14px;
+            font-size: 14px; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: all 0.2s;
+        }
+        #program-name-btn:hover { background: rgba(59, 130, 246, 0.25); }
+        .program-name-display {
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 16.5px; font-weight: 800; cursor: pointer;
+        }
+
+        /* ---------------- 컨트롤 버튼 ---------------- */
+        .controls {
+            display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 24px;
+        }
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main); padding: 10px 18px; border-radius: 10px;
+            font-family: inherit; font-size: 14.5px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-action:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-pdf { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+        .btn-image { background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+        .btn-reset { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
+
+        /* ---------------- 레이아웃 및 카드 ---------------- */
+        .grid { display: flex; flex-wrap: wrap; gap: 28px; }
+        .card {
+            flex: 1 1 320px; max-width: 100%;
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px;
+            padding: 30px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: var(--card-theme); opacity: 0.8;
+        }
+        .card:hover {
+            transform: translateY(-4px); border-color: var(--card-theme-hover);
+            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.4), 0 0 24px var(--card-theme-bg);
+        }
+        .card-full { flex: 1 1 100%; }
+        
+        .card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .card-header-left { display: flex; align-items: center; gap: 16px; }
+        .card-icon {
+            font-size: 26px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
+            border-radius: 16px; background: var(--card-theme-bg); color: var(--card-theme); border: 1px solid var(--card-theme-border);
+        }
+        .card-title { font-size: 23px; font-weight: 700; margin: 0; }
+        .btn-add-memo {
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-sub); padding: 6px 12px; border-radius: 6px;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .btn-add-memo:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+        .card-body { display: flex; flex-direction: column; flex-grow: 1; }
+
+        /* ---------------- 리스트 아이템 (체크박스 스타일 포함) ---------------- */
+        .item-wrapper { display: flex; flex-direction: column; margin-bottom: 14px; }
+        .item-wrapper:last-child { margin-bottom: 0; }
+        
+        /* 1. 클릭 가능한 영역으로 변경 */
+        .item-content { 
+            flex: 1; 
+            cursor: pointer; 
+            transition: opacity 0.2s; 
+            padding: 2px 0;
+        }
+        .item-content:hover .item-text::before {
+            opacity: 1; /* 호버 시 네모박스가 좀 더 진해짐 */
+        }
+        
+        .item-text {
+            font-size: 17.5px; font-weight: 600; color: var(--text-main); line-height: 1.35;
+            display: flex; align-items: flex-start;
+        }
+        
+        /* 타이틀에만 취소선을 긋기 위한 내부 래퍼 스타일 */
+        .item-title-text { transition: all 0.2s; }
+        
+        /* 2. 네모 박스를 중앙 정렬(flex)로 미세 조정하여 체크 모양이 정중앙에 오도록 수정 */
+        .item-text::before {
+            content: ''; display: inline-flex; width: 14px; height: 14px;
+            align-items: center; justify-content: center; /* 체크 모양 중앙 정렬 */
+            background: transparent; border: 2px solid var(--card-theme);
+            border-radius: 4px; margin-top: 5px; margin-right: 12px; flex-shrink: 0; opacity: 0.9;
+            transition: all 0.2s; /* 부드러운 체크 애니메이션 */
+        }
+        
+        .item-subtext {
+            font-size: 15px; color: var(--text-sub); margin-top: 2px;
+            display: block; padding-left: 30px; transition: all 0.2s;
+        }
+        .sub-list { margin: 4px 0 0 0; padding-left: 0; list-style: none; }
+        .sub-list li {
+            font-size: 15.5px; color: var(--text-sub); margin-bottom: 4px;
+            position: relative; line-height: 1.4; padding-left: 14px; margin-left: 30px;
+            transition: all 0.2s;
+        }
+        .sub-list li:last-child { margin-bottom: 0; }
+        .sub-list li::before { content: '•'; position: absolute; left: 0; color: var(--text-muted); }
+
+        /* 3. 체크(완료) 상태 시 디자인 변경 */
+        .item-wrapper.checked .item-title-text,
+        .item-wrapper.checked .item-subtext,
+        .item-wrapper.checked .sub-list li {
+            text-decoration: line-through; /* 취소선 */
+            color: var(--text-muted);      /* 색상 톤 다운 */
+        }
+        
+        /* 체크된 네모 박스 스타일 (배경이 채워지고 체크 모양 표시) */
+        .item-wrapper.checked .item-text::before {
+            background: var(--card-theme);
+            content: '✓';
+            color: var(--card-bg); /* 어두운 텍스트 색상 */
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .category-memo-display {
+            margin-top: 18px; padding: 14px; background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--card-theme); border-radius: 8px; color: var(--text-main);
+            font-size: 15px; line-height: 1.5; cursor: pointer; white-space: pre-wrap; transition: background 0.2s;
+        }
+        .category-memo-display:hover { background: rgba(255, 255, 255, 0.08); }
+
+        /* ---------------- 공통 모달 ---------------- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: #1e2029; border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px; padding: 24px; width: 90%; max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .modal-content.text-center { text-align: center; }
+        .modal-content h3 { margin: 0 0 16px 0; font-size: 18px; color: #fff; }
+        .modal-input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; padding: 12px; border-radius: 8px; font-size: 16px;
+            margin-bottom: 20px; font-family: inherit;
+        }
+        .modal-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+        .modal-input:focus { outline: none; border-color: #3b82f6; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .modal-actions.center { justify-content: center; }
+        .modal-btn {
+            padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.2s;
+        }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        .btn-save { background: #3b82f6; color: #fff; }
+        .btn-save:hover { background: #2563eb; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* ---------------- PDF Export용 특별 스타일 ---------------- */
+        .pdf-export-mode .btn-add-memo { display: none !important; }
+        .pdf-export-mode {
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
+            display: flex !important; flex-direction: column !important;
+            align-items: center !important; padding: 40px 20px !important;
+        }
+        .pdf-export-mode .container { width: 100% !important; max-width: 1100px !important; margin: 0 !important; }
+        .pdf-export-mode .header-text, .pdf-export-mode .program-name-display {
+            background: none !important; -webkit-text-fill-color: #f8fafc !important; color: #f8fafc !important;
+        }
+
+        /* ---------------- 미디어 쿼리 & 프린트 ---------------- */
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            body { padding: 20px 16px 60px; }
+            .header h1 { font-size: 28px; }
+            .header-main-row { flex-direction: column; gap: 14px; }
+            .header-spacer, .progress-wrapper-right { display: none; }
+        }       
+        @media print {
+            body, #pdf-wrapper {
+                background: #0b0d14 !important; color: #f8fafc !important;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+            #action-controls, .btn-add-memo, .modal-overlay { display: none !important; }
+            .card { break-inside: avoid; page-break-inside: avoid; background: #1e2029 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="padding-top: 10px;">
+    <div class="controls" id="action-controls">
+        <button class="btn-action btn-pdf" onclick="downloadPDF()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span id="text-pdf">PDF</span>
+        </button>
+        <button class="btn-action btn-image" onclick="downloadImage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span id="text-image">이미지</span>
+        </button>
+        <button class="btn-action btn-reset" onclick="openResetModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            초기화
+        </button>
+    </div>
+</div>
+
+<div id="pdf-wrapper" style="background-color: #0b0d14; padding: 40px 20px 40px 20px;">    
+    <div class="container">
+        <div class="header">
+            <div class="header-main-row">
+                <div class="header-spacer"></div>
+                <h1>
+                    <span class="header-emoji">📋</span> 
+                    <span class="header-text">중계 사전답사</span>
+                </h1>
+                <div class="progress-wrapper-right"></div>
+            </div>
+            <div id="program-name-container">
+                <button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>
+            </div>
+        </div>
+        <div class="grid" id="checklist-container"></div>
+    </div>
+</div>
+
+<!-- 모달 공통 영역 -->
+<div id="program-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>프로그램명 입력</h3>
+        <input type="text" id="modal-program-input" class="modal-input" placeholder="예: 2026 월드컵 중계">
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" onclick="closeModal('program-modal')">취소</button>
+            <button class="modal-btn btn-save" onclick="applyProgramName()">확인</button>
+        </div>
+    </div>
+</div>
+
+<div id="memo-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>메모</h3>
+        <textarea id="modal-memo-input" class="modal-input modal-textarea" placeholder="메모를 입력하세요..."></textarea>
+        <div class="modal-actions" style="justify-content: flex-end; gap: 12px;">
+            <button class="modal-btn btn-danger" id="btn-delete-memo" onclick="deleteMemo()" style="display: none;">삭제</button>
+            <button class="modal-btn btn-cancel" onclick="closeModal('memo-modal')">취소</button>
+            <button class="modal-btn btn-save" onclick="applyMemo()">저장</button>
+        </div>
+    </div>
+</div>
+
+<div id="reset-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content text-center">
+        <h3>초기화</h3>
+        <p style="color: var(--text-sub); margin-bottom: 24px; font-size: 15px; line-height: 1.5;">작성된 모든 메모와 프로그램명, 체크 내역을<br>초기화 하시겠습니까?</p>
+        <div class="modal-actions center">
+            <button class="modal-btn btn-cancel" onclick="closeModal('reset-modal')">취소</button>
+            <button class="modal-btn btn-danger" onclick="executeReset()">초기화</button>
+        </div>
+    </div>
+</div>
+
+<div id="alert-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content text-center">
+        <h3 id="alert-modal-title">알림</h3>
+        <p id="alert-modal-message" style="color: var(--text-sub); margin-bottom: 24px; font-size: 15px; line-height: 1.5;"></p>
+        <div class="modal-actions center" id="alert-modal-actions"></div>
+    </div>
+</div>
+
+<script>
+    /** 
+     * ==========================================
+     * 데이터 설정 영역 (Data Configuration)
+     * ==========================================
+     */
+    const checklistData = [
+        {
+            title: "중계차", icon: "🚐", theme: "#3b82f6",
+            items: [
+                { text: "진출입로", subItems: ["도로폭, 상단 장애물", "통과높이 : 4m 이상"] },
+                { text: "주차위치", subItems: ["보도블럭, 연석 등 현장 훼손 가능성", "스커드, 후방 드럼룸 공간 확인"] },
+                { text: "케이블 포설", subItems: ["포설 경로", "깔판 갯수"] }
+            ]
+        },
+        {
+            title: "영상", icon: "🎥", theme: "#8b5cf6",
+            items: [
+                { text: "배치도", subItems: ["출연자 수", "위치"] },
+                { text: "카메라", subItems: ["STD / EFP / Drone / J·J / Rail", "대수 및 위치"] },
+                { text: "각종 신호 In/Out" }
+            ]
+        },
+        {
+            title: "음향", icon: "🎧", theme: "#ec4899",
+            items: [
+                { text: "마이크", subItems: ["유·무선 / 핀·핸드", "Eff Mic 설치"] },               
+                { text: "수음환경", subItems: ["공간 울림도", "소음 (바람, 에어컨 실외기 등)"] },
+                { text: "페이징", subItems: ["유선 / 무선"] },
+                { text: "인터컴", subItems: ["W/L-1, W/L-2, 인터컴 수량"] },
+                { text: "확성", subItems: ["PGM / BGM / VCR"] }
+            ]
+        },
+        {
+            title: "조명", icon: "💡", theme: "#f59e0b",
+            items: [
+                { text: "태양광 방향" },
+                { text: "전기", subItems: ["한전 : 배전함 위치, 허용용량", "발전차 : 주차공간 확보, 예산 협의, 섭외"] },
+            ]
+        },
+        {
+            title: "협조사항", icon: "🤝", theme: "#10b981",
+            items: [
+                { text: "주차", subItems: ["전날, 당일, 다음날"] },
+                { text: "장비 설치" },
+                { text: "장소 출입" }
+            ]
+        },
+        {
+            title: "회선구성", icon: "📡", theme: "#0ea5e9",
+            items: [
+                { text: "KT 회선", subItems: ["방송회선", "통신회선 (N-1, RD)"] },
+                { text: "자체 회선", subItems: ["SNG", "MNG"] }
+            ]
+        },
+        {
+            title: "특이사항", icon: "📝", theme: "#64748b",
+            isFullWidth: true,
+            items: [] 
+        }
+    ];
+
+    /** 
+     * ==========================================
+     * 시스템 및 비즈니스 로직 (System Logic)
+     * ==========================================
+     */
+    let currentProgramName = ""; 
+    let categoryMemos = []; 
+    let categoryChecked = []; // 새롭게 추가된 체크 상태 저장 배열
+    let currentCategoryIndex = -1; 
+    let currentSubMemoIndex = -1; 
+
+    // 유틸: 모달 닫기 공통
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // 프로그램명 모달 로직
+    function openProgramModal() {
+        document.getElementById('modal-program-input').value = currentProgramName;
+        document.getElementById('program-modal').style.display = 'flex';
+        document.getElementById('modal-program-input').focus();
+    }
+    
+    function applyProgramName() {
+        currentProgramName = document.getElementById('modal-program-input').value.trim();
+        updateProgramDisplay();
+        saveAndUpdate();
+        closeModal('program-modal');
+    }
+
+    function updateProgramDisplay() {
+        const container = document.getElementById('program-name-container');
+        if (currentProgramName) {
+            container.innerHTML = `<span class="program-name-display" onclick="openProgramModal()" title="수정하려면 클릭하세요">${currentProgramName}</span>`;
+        } else {
+            container.innerHTML = `<button id="program-name-btn" onclick="openProgramModal()">어떤 프로그램인가요?</button>`;
+        }
+    }
+
+    // 메모 모달 로직
+    function openMemoModal(categoryIdx, memoIdx = -1) {
+        currentCategoryIndex = categoryIdx;
+        currentSubMemoIndex = memoIdx;
+        const modalInput = document.getElementById('modal-memo-input');
+        const deleteBtn = document.getElementById('btn-delete-memo');
+        
+        modalInput.value = memoIdx >= 0 ? categoryMemos[categoryIdx][memoIdx] : "";
+        deleteBtn.style.display = memoIdx >= 0 ? 'block' : 'none';
+
+        document.getElementById('memo-modal').style.display = 'flex';
+        modalInput.focus();
+    }
+    
+    function applyMemo() {
+        const text = document.getElementById('modal-memo-input').value.trim();
+        if (currentCategoryIndex >= 0) {
+            if (text) {
+                if (currentSubMemoIndex >= 0) categoryMemos[currentCategoryIndex][currentSubMemoIndex] = text;
+                else categoryMemos[currentCategoryIndex].push(text);
+            } else if (currentSubMemoIndex >= 0) {
+                categoryMemos[currentCategoryIndex].splice(currentSubMemoIndex, 1);
+            }
+            updateAllMemoDisplays();
+            saveAndUpdate();
+        }
+        closeModal('memo-modal');
+    }
+    
+    function deleteMemo() {
+        if (currentCategoryIndex >= 0 && currentSubMemoIndex >= 0) {
+            categoryMemos[currentCategoryIndex].splice(currentSubMemoIndex, 1);
+            updateAllMemoDisplays();
+            saveAndUpdate();
+        }
+        closeModal('memo-modal');
+    }
+
+    function updateAllMemoDisplays() {
+        categoryMemos.forEach((memos, categoryIdx) => {
+            const container = document.getElementById(`memo-container-${categoryIdx}`);
+            if (container) {
+                container.innerHTML = "";
+                memos.forEach((memo, memoIdx) => {
+                    if (memo) {
+                        const div = document.createElement('div');
+                        div.className = 'category-memo-display';
+                        div.style.marginTop = '0';
+                        div.style.display = 'block';
+                        div.title = '클릭하여 메모 수정/삭제';
+                        div.innerText = memo;
+                        div.onclick = () => openMemoModal(categoryIdx, memoIdx);
+                        container.appendChild(div);
+                    }
+                });
+            }
+        });
+    }
+
+    // 항목 체크 토글 함수
+    function toggleCheck(cIdx, iIdx) {
+        categoryChecked[cIdx][iIdx] = !categoryChecked[cIdx][iIdx]; // 상태 반전
+        const wrap = document.getElementById(`item-wrap-${cIdx}-${iIdx}`);
+        
+        if (categoryChecked[cIdx][iIdx]) {
+            wrap.classList.add('checked');
+        } else {
+            wrap.classList.remove('checked');
+        }
+        
+        saveAndUpdate();
+    }
+
+    // 초기화 모달 로직
+    function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
+    
+    function executeReset() {
+        categoryMemos = new Array(checklistData.length).fill().map(() => []);
+        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); // 체크 해제 반영
+        currentProgramName = "";
+        
+        updateProgramDisplay();
+        updateAllMemoDisplays();
+        
+        // 화면상에 있는 모든 취소선/체크 디자인 즉시 리셋
+        document.querySelectorAll('.item-wrapper.checked').forEach(el => el.classList.remove('checked'));
+        
+        saveAndUpdate();
+        closeModal('reset-modal');
+    }
+
+    // 알림 모달 로직
+    function openAlertModal(message, isPrintFallback = false, title = "안내") {
+        document.getElementById('alert-modal-title').innerText = title;
+        document.getElementById('alert-modal-message').innerHTML = message;
+        
+        const actions = document.getElementById('alert-modal-actions');
+        actions.innerHTML = isPrintFallback 
+            ? `<button class="modal-btn btn-cancel" onclick="closeModal('alert-modal')">취소</button><button class="modal-btn btn-save" onclick="executePrintFallback()">인쇄하기</button>`
+            : `<button class="modal-btn btn-save" onclick="closeModal('alert-modal')">확인</button>`;
+        
+        document.getElementById('alert-modal').style.display = 'flex';
+    }
+
+    function executePrintFallback() {
+        closeModal('alert-modal');
+        window.print();
+    }
+
+    // 단축키 제어
+    document.addEventListener('keydown', function(e) {
+        const modals = ['program-modal', 'memo-modal', 'reset-modal', 'alert-modal'];
+        const openModalId = modals.find(id => document.getElementById(id).style.display === 'flex');
+
+        if (e.key === 'Escape' && openModalId) closeModal(openModalId);
+        
+        if (e.key === 'Enter' && openModalId && openModalId !== 'memo-modal') {
+            e.preventDefault();
+            if (openModalId === 'program-modal') applyProgramName();
+            else if (openModalId === 'reset-modal') executeReset();
+            else if (openModalId === 'alert-modal') {
+                const actions = document.getElementById('alert-modal-actions').innerHTML;
+                actions.includes('executePrintFallback()') ? executePrintFallback() : closeModal('alert-modal');
+            }
+        }
+    });
+
+    function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // 초기 렌더링
+    function renderChecklist() {
+        categoryMemos = new Array(checklistData.length).fill().map(() => []);
+        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); // 체크 초기화
+        
+        const container = document.getElementById('checklist-container');
+        
+        checklistData.forEach((category, index) => {
+            const card = document.createElement('div');
+            card.className = category.isFullWidth ? 'card card-full' : 'card';
+            
+            card.style.setProperty('--card-theme', category.theme);
+            card.style.setProperty('--card-theme-bg', hexToRgba(category.theme, 0.15));
+            card.style.setProperty('--card-theme-border', hexToRgba(category.theme, 0.20));
+            card.style.setProperty('--card-theme-hover', hexToRgba(category.theme, 0.40));
+
+            const subItemsHTML = (item) => (item.subItems && item.subItems.length > 0) 
+                ? `<ul class="sub-list">${item.subItems.map(sub => `<li>${sub}</li>`).join('')}</ul>` : '';
+            
+            const subTextHTML = (item) => item.subText 
+                ? `<span class="item-subtext">${item.subText}</span>` : '';
+
+            // 4. 클릭 이벤트(onclick)와 고유 ID, 타이틀 내부 래퍼(item-title-text) 부여
+            const itemsHTML = category.items.map((item, itemIdx) => `
+                <div class="item-wrapper" id="item-wrap-${index}-${itemIdx}">
+                    <div class="item-content" onclick="toggleCheck(${index}, ${itemIdx})">
+                        <div class="item-text">
+                            <span class="item-title-text">${item.text}</span>
+                        </div>
+                        ${subTextHTML(item)}
+                        ${subItemsHTML(item)}
+                    </div>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">${category.icon}</div>
+                        <h2 class="card-title">${category.title}</h2>
+                    </div>
+                    <div class="card-header-right">
+                        <button class="btn-add-memo" onclick="openMemoModal(${index})">+ 메모</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    ${itemsHTML}
+                    <div id="memo-container-${index}" style="margin-top: 18px; display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        loadState();
+    }
+
+    function saveAndUpdate() {
+        try {
+            localStorage.setItem('surveyChecklistStateV8', JSON.stringify({ 
+                memos: categoryMemos, 
+                programName: currentProgramName,
+                checked: categoryChecked 
+            }));
+        } catch (error) {
+            console.warn("카카오톡 등 일부 환경에서는 데이터 자동 저장이 제한될 수 있습니다.", error);
+        }
+    }
+
+    function loadState() {
+        const savedState = JSON.parse(localStorage.getItem('surveyChecklistStateV8'));
+        
+        if (savedState) {
+            if (savedState.memos) categoryMemos = savedState.memos;
+            if (savedState.programName) {
+                currentProgramName = savedState.programName;
+                updateProgramDisplay();
+            }
+            // 기존 사용자 호환성 유지: 체크 데이터가 있으면 가져옴
+            if (savedState.checked) {
+                categoryChecked = savedState.checked;
+            }
+        }
+
+        // 배열 길이가 맞지 않는 경우(새로운 카테고리가 추가된 경우 등) 대응
+        while (categoryMemos.length < checklistData.length) categoryMemos.push([]);
+        while (categoryChecked.length < checklistData.length) categoryChecked.push([]);
+        
+        checklistData.forEach((category, cIdx) => {
+            // 체크 상태 갯수 보정
+            while (categoryChecked[cIdx].length < category.items.length) {
+                categoryChecked[cIdx].push(false);
+            }
+            // DOM에 체크 상태 반영
+            category.items.forEach((_, iIdx) => {
+                const wrap = document.getElementById(`item-wrap-${cIdx}-${iIdx}`);
+                if (wrap) {
+                    if (categoryChecked[cIdx][iIdx]) wrap.classList.add('checked');
+                    else wrap.classList.remove('checked');
+                }
+            });
+        });
+        
+        updateAllMemoDisplays();
+        saveAndUpdate(); 
+    }
+
+    /** 
+     * ==========================================
+     * 출력 (PDF / PNG) 공통 모듈
+     * ==========================================
+     */
+    function toggleExportState(isExporting) {
+        const element = document.getElementById('pdf-wrapper');
+        const controls = document.getElementById('action-controls');
+        const cards = document.querySelectorAll('.card');
+
+        if (isExporting) {
+            controls.style.display = 'none';
+            cards.forEach(c => { c.style.backdropFilter = 'none'; c.style.webkitBackdropFilter = 'none'; });
+            element.classList.add('pdf-export-mode');
+        } else {
+            element.style.width = '';
+            element.style.height = '';
+            element.style.overflow = '';
+            element.classList.remove('pdf-export-mode');
+            cards.forEach(c => { c.style.backdropFilter = ''; c.style.webkitBackdropFilter = ''; });
+            controls.style.display = 'flex';
+            document.querySelectorAll('iframe, .html2canvas-container').forEach(el => el.remove());
+        }
+        return element;
+    }
+
+    function downloadPDF() {
+        const btnText = document.getElementById('text-pdf');
+        const originalText = btnText.innerText;
+        btnText.innerText = '⏳ 렌더링 중...';
+        const element = toggleExportState(true);
+        document.fonts.ready.then(() => {
+            setTimeout(() => {
+                const rect = element.getBoundingClientRect();
+                element.style.width = rect.width + 'px';
+                element.style.height = rect.height + 'px';
+                element.style.overflow = 'hidden'; 
+
+                const opt = {
+                    margin: 0,
+                    filename: currentProgramName ? `${currentProgramName}_사전답사.pdf` : '사전답사.pdf',
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: rect.width, height: rect.height }, 
+                    jsPDF: { unit: 'px', format: [rect.width, rect.height], orientation: rect.height > rect.width ? 'portrait' : 'landscape' }
+                };
+
+                html2pdf().from(element).set(opt).save()
+                    .then(() => restore())
+                    .catch(err => {
+                        console.error("PDF 생성 에러:", err);
+                        restore();
+                        openAlertModal("기기 환경에 의해 PDF 자동 변환이 차단되었습니다.<br><br>아래 <b>[인쇄하기]</b> 버튼을 누른 후, 옵션에서 <b>'PDF로 저장'</b>을 선택해주세요.", true);
+                    });
+            }, 150);
+        });
+
+        function restore() { toggleExportState(false); btnText.innerText = originalText; }
+    }
+
+    function downloadImage() {
+        const btnText = document.getElementById('text-image');
+        const originalText = btnText.innerText;
+        btnText.innerText = '⏳ 렌더링 중...';
+        
+        const element = toggleExportState(true);
+
+        document.fonts.ready.then(() => {
+            setTimeout(() => {
+                const rect = element.getBoundingClientRect();
+                element.style.width = rect.width + 'px';
+                element.style.height = rect.height + 'px';
+                element.style.overflow = 'hidden'; 
+
+                html2canvas(element, { 
+                    scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: rect.width, height: rect.height
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = currentProgramName ? `${currentProgramName}_사전답사.png` : '사전답사.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    restore();
+                }).catch(err => {
+                    console.error("이미지 생성 에러:", err);
+                    restore();
+                    openAlertModal("기기 환경에 의해 이미지 자동 변환이 차단되었습니다.", false);
+                });
+            }, 150);
+        });
+
+        function restore() { toggleExportState(false); btnText.innerText = originalText; }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderChecklist);
+    } else {
+        renderChecklist();
+    }
+</script>
+</body>
+</html>
