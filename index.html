@@ -1098,10 +1098,12 @@
         const element = document.getElementById('pdf-wrapper');
         const controls = document.getElementById('action-controls');
         const cards = document.querySelectorAll('.card');
+        const pills = document.querySelectorAll('.info-pill');
 
         if (isExporting) {
             controls.style.display = 'none';
             cards.forEach(c => { c.style.backdropFilter = 'none'; c.style.webkitBackdropFilter = 'none'; });
+            pills.forEach(p => { p.style.backdropFilter = 'none'; p.style.webkitBackdropFilter = 'none'; });
             element.classList.add('pdf-export-mode');
         } else {
             element.style.width = '';
@@ -1109,6 +1111,7 @@
             element.style.overflow = '';
             element.classList.remove('pdf-export-mode');
             cards.forEach(c => { c.style.backdropFilter = ''; c.style.webkitBackdropFilter = ''; });
+            pills.forEach(p => { p.style.backdropFilter = ''; p.style.webkitBackdropFilter = ''; });
             controls.style.display = 'flex';
             document.querySelectorAll('iframe, .html2canvas-container').forEach(el => el.remove());
         }
