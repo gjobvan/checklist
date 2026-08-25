@@ -142,16 +142,48 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        /* PDF 및 이미지 출력 시 검정색 단색으로 깔끔하게 통일 */
-        .pdf-export-mode .program-name-display,
-        .pdf-export-mode .location-name-display {
-            background: #0b0d14 !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            box-shadow: none !important;
+        /* ---------------- PDF / 이미지 캡처 전용 스타일 (텍스트 가림 완벽 해결) ---------------- */
+        .pdf-export-mode .info-pill {
+            display: inline-block !important;
+            text-align: center !important;
+            line-height: 22px !important;
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            box-shadow: none !important;
+            transform: none !important;
+            transition: none !important;
+        }
+        .pdf-export-mode .info-pill .pill-emoji {
+            display: inline-block !important;
+            margin-right: 8px !important;
+            filter: none !important;
+            vertical-align: middle !important;
+        }
+        .pdf-export-mode .info-pill span {
+            display: inline-block !important;
+            vertical-align: middle !important;
+            background: transparent !important;
+        }
+        .pdf-export-mode .header-text {
+            background: none !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            color: #f8fafc !important;
+        }
+        .pdf-export-mode .program-name-display {
+            background: #111927 !important;
+            border: 1px solid #3b82f6 !important;
+            color: #93c5fd !important;
+        }
+        .pdf-export-mode .program-name-display span {
+            color: #93c5fd !important;
+        }
+        .pdf-export-mode .location-name-display {
+            background: #0d1e1a !important;
+            border: 1px solid #10b981 !important;
+            color: #6ee7b7 !important;
+        }
+        .pdf-export-mode .location-name-display span {
+            color: #6ee7b7 !important;
         }
 
         /* ---------------- 컨트롤 버튼 ---------------- */
@@ -313,9 +345,6 @@
             align-items: center !important; padding: 40px 20px !important;
         }
         .pdf-export-mode .container { width: 100% !important; max-width: 1100px !important; margin: 0 !important; }
-        .pdf-export-mode .header-text, .pdf-export-mode .program-name-display, .pdf-export-mode .location-name-display {
-            background: none !important; -webkit-text-fill-color: #f8fafc !important; color: #f8fafc !important;
-        }
 
         /* ---------------- 미디어 쿼리 & 프린트 ---------------- */
         @media (max-width: 768px) {
@@ -439,10 +468,10 @@
             </div>
             <div id="info-container">
                 <div id="program-name-container">
-                    <button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>
+                    <button id="program-name-btn" class="info-pill" onclick="openProgramModal()"><span class="pill-emoji">📺</span>프로그램 제목을 입력해주세요</button>
                 </div>
                 <div id="location-name-container">
-                    <button id="location-name-btn" onclick="openLocationModal()">📍 장소를 입력해 주세요</button>
+                    <button id="location-name-btn" class="info-pill" onclick="openLocationModal()"><span class="pill-emoji">📍</span>장소를 입력해 주세요</button>
                 </div>
             </div>
         </div>
@@ -871,18 +900,14 @@
         if (savedState) {
             if (savedState.memos) categoryMemos = savedState.memos;
             if (savedState.photos) categoryPhotos = savedState.photos;
-            if (savedState.programName) {
-                currentProgramName = savedState.programName;
-                updateProgramDisplay();
-            }
-            if (savedState.locationName) { 
-                currentLocationName = savedState.locationName;
-                updateLocationDisplay();
-            }
-            if (savedState.checked) {
-                categoryChecked = savedState.checked;
-            }
+            if (savedState.programName) currentProgramName = savedState.programName;
+            if (savedState.locationName) currentLocationName = savedState.locationName;
+            if (savedState.checked) categoryChecked = savedState.checked;
         }
+
+        // 최초 접속 시에도 2번 사진의 둥근 디자인(📺)으로 화면이 그려지도록 항상 호출
+        updateProgramDisplay();
+        updateLocationDisplay();
 
         while (categoryMemos.length < checklistData.length) categoryMemos.push([]);
         while (categoryPhotos.length < checklistData.length) categoryPhotos.push([]);
