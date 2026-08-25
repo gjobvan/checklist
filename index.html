@@ -86,6 +86,7 @@
         .info-pill {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             border-radius: 12px;
             font-family: inherit;
@@ -93,72 +94,47 @@
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            box-sizing: border-box;
         }
 
-        /* 미입력 상태 버튼 */
-        #program-name-btn {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px dashed rgba(96, 165, 250, 0.45);
+        /* 1. 프로그램명 버튼 및 입력 후 표시 (부드러운 블루 톤) */
+        #program-name-btn,
+        .program-name-display {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.35);
             color: #93c5fd;
-            font-size: 14.5px;
+            font-size: 15px;
             font-weight: 600;
             padding: 8px 18px;
+            min-height: 40px;
         }
-        #program-name-btn:hover {
-            background: rgba(59, 130, 246, 0.18);
+        #program-name-btn:hover,
+        .program-name-display:hover {
+            background: rgba(59, 130, 246, 0.22);
             border-color: #60a5fa;
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+            color: #ffffff;
         }
 
-        #location-name-btn {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px dashed rgba(52, 211, 153, 0.45);
+        /* 2. 장소 버튼 및 입력 후 표시 (부드러운 에메랄드 톤) */
+        #location-name-btn,
+        .location-name-display {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
             color: #6ee7b7;
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 600;
             padding: 7px 16px;
+            min-height: 38px;
         }
-        #location-name-btn:hover {
-            background: rgba(16, 185, 129, 0.18);
+        #location-name-btn:hover,
+        .location-name-display:hover {
+            background: rgba(16, 185, 129, 0.22);
             border-color: #34d399;
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
-        }
-
-        /* 입력 완료 상태 */
-        .program-name-display {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.22));
-            border: 1px solid rgba(96, 165, 250, 0.4);
-            padding: 9px 22px;
-            font-size: 18px;
-            font-weight: 700;
             color: #ffffff;
-            letter-spacing: -0.3px;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
-        }
-        .program-name-display:hover {
-            transform: translateY(-2px);
-            border-color: rgba(96, 165, 250, 0.7);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.32), rgba(139, 92, 246, 0.32));
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
-        }
-
-        .location-name-display {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.18));
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            padding: 6px 18px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #a7f3d0;
-            letter-spacing: -0.2px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
-        }
-        .location-name-display:hover {
-            transform: translateY(-2px);
-            border-color: rgba(52, 211, 153, 0.65);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(6, 182, 212, 0.28));
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
         }
 
         .info-pill .pill-emoji {
@@ -166,7 +142,7 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        /* PDF 및 이미지 출력 시 검정색 단색 통일 */
+        /* PDF 및 이미지 출력 시 검정색 단색으로 깔끔하게 통일 */
         .pdf-export-mode .program-name-display,
         .pdf-export-mode .location-name-display {
             background: #0b0d14 !important;
