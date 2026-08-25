@@ -343,11 +343,13 @@
                 radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
                 radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
             display: flex !important; flex-direction: column !important;
-            align-items: center !important; padding: 40px 20px !important;
-            /* 모바일에서도 강제로 PC 해상도(1100px)를 완벽하게 유지 */
-            width: 1100px !important; 
-            min-width: 1100px !important;
+            align-items: center !important; 
+            padding: 40px !important; /* 상하좌우 여백 40px로 균형 맞춤 */
+            /* 1100px 콘텐츠가 잘리지 않도록 캔버스 너비를 1180px로 확장 */
+            width: 1180px !important; 
+            min-width: 1180px !important;
             max-width: none !important;
+            box-sizing: border-box !important;
         }
         .pdf-export-mode .container { width: 1100px !important; max-width: 1100px !important; margin: 0 auto !important; }
         
@@ -356,7 +358,7 @@
             display: flex !important; flex-wrap: wrap !important; flex-direction: row !important; 
         }
         .pdf-export-mode .card { 
-            flex: 1 1 320px !important; max-width: calc(33.333% - 20px) !important; 
+            flex: 1 1 320px !important; max-width: calc(33.333% - 18.66px) !important; /* 간격(gap) 정밀 보정 */
         }
         .pdf-export-mode .card-full { 
             flex: 1 1 100% !important; max-width: 100% !important; 
@@ -1159,14 +1161,14 @@
         return element;
     }
     
-    function downloadPDF() {
+function downloadPDF() {
         const btnText = document.getElementById('text-pdf');
         const originalText = btnText.innerText;
         btnText.innerText = '⏳ 렌더링 중...';
         const element = toggleExportState(true);
         document.fonts.ready.then(() => {
             setTimeout(() => {
-                const targetWidth = 1100;
+                const targetWidth = 1180; // 캔버스 너비를 1180px로 확장하여 잘림 방지
                 element.style.width = targetWidth + 'px';
                 
                 const rect = element.getBoundingClientRect();
@@ -1186,7 +1188,7 @@
                         scrollX: 0, 
                         width: targetWidth, 
                         height: targetHeight,
-                        windowWidth: targetWidth // 핵심: 모바일 기기를 PC 해상도로 속임
+                        windowWidth: targetWidth 
                     }, 
                     jsPDF: { unit: 'px', format: [targetWidth, targetHeight], orientation: targetHeight > targetWidth ? 'portrait' : 'landscape' }
                 };
@@ -1213,7 +1215,7 @@
 
         document.fonts.ready.then(() => {
             setTimeout(() => {
-                const targetWidth = 1100;
+                const targetWidth = 1180; // 캔버스 너비를 1180px로 확장하여 잘림 방지
                 element.style.width = targetWidth + 'px';
                 
                 const rect = element.getBoundingClientRect();
@@ -1222,20 +1224,22 @@
                 element.style.overflow = 'hidden'; 
 
                 html2canvas(element, { 
-                    scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: targetWidth, height: targetHeight,
+                    scale: 2, 
+                    backgroundColor: '#0b0d14', 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    scrollX: 0, 
+                    width: targetWidth, 
+                    height: targetHeight,
                     windowWidth: targetWidth
                 }).then(canvas => {
                     const imgData = canvas.toDataURL('image/png');
-                    
-                    // 모바일 기기인지 판별
                     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                     
                     if (isMobile) {
-                        // 모바일에서는 화면에 띄워주고 '길게 눌러 저장' 유도 (카카오톡 및 iOS 사파리 대응)
                         document.getElementById('generated-result-image').src = imgData;
                         document.getElementById('result-image-modal').style.display = 'flex';
                     } else {
-                        // PC에서는 파일로 즉시 다운로드
                         const link = document.createElement('a');
                         link.href = imgData;
                         link.download = currentProgramName ? `${currentProgramName}_사전답사.png` : '사전답사.png';
