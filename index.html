@@ -73,40 +73,109 @@
             font-size: 38px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
         }
         
-        /* 입력 버튼 컨테이너 (세로 정렬) */
-        #info-container { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; }
-        
-        #program-name-btn {
-            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa; border-radius: 8px;
-            font-size: 14px; font-weight: 600; font-family: inherit;
-            cursor: pointer; transition: all 0.2s;
-            padding: 0 16px !important;
-            height: 40px !important; /* 이모지에 의해 밀리지 않도록 크기 확장 및 강제 고정 */
-            line-height: 40px !important; 
-            box-sizing: border-box !important;
-            display: inline-flex; align-items: center; justify-content: center;
+        /* ---------------- 프로그램명 & 장소 배지 스타일 ---------------- */
+        #info-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
         }
-        #program-name-btn:hover { background: rgba(59, 130, 246, 0.25); }
-        
-        /* 장소 버튼 (초록색 테마) */
-        #location-name-btn {
-            background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #34d399; border-radius: 8px;
-            font-size: 14px; font-weight: 600; font-family: inherit;
-            cursor: pointer; transition: all 0.2s;
-            padding: 0 16px !important;
-            height: 40px !important; /* 이모지에 의해 밀리지 않도록 크기 확장 및 강제 고정 */
-            line-height: 40px !important; 
-            box-sizing: border-box !important;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
-        #location-name-btn:hover { background: rgba(16, 185, 129, 0.25); }
 
-        .program-name-display, .location-name-display {
-            background: linear-gradient(135deg, #ffffff, #cbd5e1);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-size: 16.5px; font-weight: 800; cursor: pointer; text-align: center;
+        .info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 12px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* 미입력 상태 버튼 */
+        #program-name-btn {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px dashed rgba(96, 165, 250, 0.45);
+            color: #93c5fd;
+            font-size: 14.5px;
+            font-weight: 600;
+            padding: 8px 18px;
+        }
+        #program-name-btn:hover {
+            background: rgba(59, 130, 246, 0.18);
+            border-color: #60a5fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+        }
+
+        #location-name-btn {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px dashed rgba(52, 211, 153, 0.45);
+            color: #6ee7b7;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 16px;
+        }
+        #location-name-btn:hover {
+            background: rgba(16, 185, 129, 0.18);
+            border-color: #34d399;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+        }
+
+        /* 입력 완료 상태 */
+        .program-name-display {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.22));
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            padding: 9px 22px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+        }
+        .program-name-display:hover {
+            transform: translateY(-2px);
+            border-color: rgba(96, 165, 250, 0.7);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.32), rgba(139, 92, 246, 0.32));
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
+        }
+
+        .location-name-display {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.18));
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            padding: 6px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #a7f3d0;
+            letter-spacing: -0.2px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+        }
+        .location-name-display:hover {
+            transform: translateY(-2px);
+            border-color: rgba(52, 211, 153, 0.65);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(6, 182, 212, 0.28));
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .info-pill .pill-emoji {
+            font-size: 1.15em;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        /* PDF 및 이미지 출력 시 검정색 단색 통일 */
+        .pdf-export-mode .program-name-display,
+        .pdf-export-mode .location-name-display {
+            background: #0b0d14 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
 
         /* ---------------- 컨트롤 버튼 ---------------- */
@@ -164,7 +233,6 @@
         .item-wrapper { display: flex; flex-direction: column; margin-bottom: 14px; }
         .item-wrapper:last-child { margin-bottom: 0; }
         
-        /* 1. 클릭 가능한 영역으로 변경 */
         .item-content { 
             flex: 1; 
             cursor: pointer; 
@@ -172,7 +240,7 @@
             padding: 2px 0;
         }
         .item-content:hover .item-text::before {
-            opacity: 1; /* 호버 시 네모박스가 좀 더 진해짐 */
+            opacity: 1;
         }
         
         .item-text {
@@ -180,16 +248,14 @@
             display: flex; align-items: flex-start;
         }
         
-        /* 타이틀에만 취소선을 긋기 위한 내부 래퍼 스타일 */
         .item-title-text { transition: all 0.2s; }
         
-        /* 2. 네모 박스를 중앙 정렬(flex)로 미세 조정하여 체크 모양이 정중앙에 오도록 수정 */
         .item-text::before {
             content: ''; display: inline-flex; width: 14px; height: 14px;
-            align-items: center; justify-content: center; /* 체크 모양 중앙 정렬 */
+            align-items: center; justify-content: center;
             background: transparent; border: 2px solid var(--card-theme);
             border-radius: 4px; margin-top: 5px; margin-right: 12px; flex-shrink: 0; opacity: 0.9;
-            transition: all 0.2s; /* 부드러운 체크 애니메이션 */
+            transition: all 0.2s;
         }
         
         .item-subtext {
@@ -205,19 +271,17 @@
         .sub-list li:last-child { margin-bottom: 0; }
         .sub-list li::before { content: '•'; position: absolute; left: 0; color: var(--text-muted); }
 
-        /* 3. 체크(완료) 상태 시 디자인 변경 */
         .item-wrapper.checked .item-title-text,
         .item-wrapper.checked .item-subtext,
         .item-wrapper.checked .sub-list li {
-            text-decoration: line-through; /* 취소선 */
-            color: var(--text-muted);      /* 색상 톤 다운 */
+            text-decoration: line-through;
+            color: var(--text-muted);
         }
         
-        /* 체크된 네모 박스 스타일 (배경이 채워지고 체크 모양 표시) */
         .item-wrapper.checked .item-text::before {
             background: var(--card-theme);
             content: '✓';
-            color: var(--card-bg); /* 어두운 텍스트 색상 */
+            color: var(--card-bg);
             font-size: 11px;
             font-weight: 900;
         }
@@ -230,6 +294,7 @@
         .category-memo-display:hover { background: rgba(255, 255, 255, 0.08); }
 
         /* ---------------- 공통 모달 ---------------- */
+        #alert-modal { z-index: 1100; }
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
@@ -292,6 +357,78 @@
             #action-controls, .btn-add-memo, .modal-overlay { display: none !important; }
             .card { break-inside: avoid; page-break-inside: avoid; background: #1e2029 !important; }
         }
+    
+        /* 사진첨부 CSS */
+        .photo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .photo-item {
+            width: calc(33.333% - 6.666px);
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .photo-item:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .photo-item-title {
+            font-size: 14.5px;
+            color: var(--text-main);
+            text-align: center;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+        .photo-item-img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #000;
+        }
+        .photo-item-memo {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #photo-detail-modal .modal-content {
+            max-width: 800px;
+            width: 95%;
+        }
+        #photo-detail-img {
+            width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            margin: 15px 0;
+            border-radius: 6px;
+            background: #000;
+        }
+        .photo-memo-text {
+            color: var(--text-sub);
+            font-size: 14px;
+            line-height: 1.5;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+
     </style>
 </head>
 <body>
@@ -349,7 +486,6 @@
     </div>
 </div>
 
-<!-- 장소 입력 모달 추가 -->
 <div id="location-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <h3>장소 입력</h3>
@@ -392,12 +528,36 @@
     </div>
 </div>
 
+<!-- 사진 업로드 모달 -->
+<div class="modal-overlay" id="photo-upload-modal" style="display: none;">
+    <div class="modal-content">
+        <h3 class="modal-title">사진 첨부</h3>
+        <input type="text" class="modal-input" id="photo-title-input" placeholder="사진 제목을 입력하세요" />
+        <input type="file" id="photo-file-input" accept="image/*" style="margin-top: 15px; color: var(--text-main); width: 100%;" />
+        <textarea class="modal-input" id="photo-memo-input" placeholder="메모를 입력하세요 (선택사항)" rows="3" style="margin-top: 15px;"></textarea>
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" onclick="closePhotoModal()">취소</button>
+            <button class="modal-btn btn-save" id="btn-save-photo" onclick="savePhoto()">추가</button>
+        </div>
+    </div>
+</div>
+
+<!-- 사진 상세 모달 -->
+<div class="modal-overlay" id="photo-detail-modal" style="display: none;">
+    <div class="modal-content">
+        <h3 class="modal-title" id="photo-detail-title">사진 상세</h3>
+        <img id="photo-detail-img" src="" alt="Photo Detail" />
+        <div class="photo-memo-text" id="photo-detail-memo"></div>
+        <div class="modal-actions" style="justify-content: flex-end; gap: 12px; display: flex;">
+            <button class="modal-btn btn-danger" id="btn-delete-photo">삭제</button>
+            <div style="flex: 1;"></div>
+            <button class="modal-btn btn-cancel" onclick="closePhotoDetail()">닫기</button>
+            <button class="modal-btn btn-save" id="btn-edit-photo">수정</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    /** 
-     * ==========================================
-     * 데이터 설정 영역 (Data Configuration)
-     * ==========================================
-     */
     const checklistData = [
         {
             title: "중계차", icon: "🚐", theme: "#3b82f6",
@@ -452,25 +612,28 @@
             title: "특이사항", icon: "📝", theme: "#64748b",
             isFullWidth: true,
             items: [] 
+        },
+        {
+            title: "사진첨부", icon: "📸", theme: "#f43f5e",
+            isFullWidth: true,
+            isPhoto: true,
+            items: [] 
         }
     ];
 
-    /** 
-     * ==========================================
-     * 시스템 및 비즈니스 로직 (System Logic)
-     * ==========================================
-     */
     let currentProgramName = ""; 
-    let currentLocationName = ""; // 장소 변수 추가
+    let currentLocationName = ""; 
     let categoryMemos = []; 
-    let categoryChecked = []; // 새롭게 추가된 체크 상태 저장 배열
+    let categoryChecked = []; 
     let currentCategoryIndex = -1; 
     let currentSubMemoIndex = -1; 
+    let categoryPhotos = [];
+    let currentPhotoCategoryIndex = null;
+    let currentDetailCategory = null;
+    let currentDetailPhotoIndex = null;
 
-    // 유틸: 모달 닫기 공통
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // 프로그램명 모달 로직
     function openProgramModal() {
         document.getElementById('modal-program-input').value = currentProgramName;
         document.getElementById('program-modal').style.display = 'flex';
@@ -483,17 +646,16 @@
         saveAndUpdate();
         closeModal('program-modal');
     }
-
+    
     function updateProgramDisplay() {
         const container = document.getElementById('program-name-container');
         if (currentProgramName) {
-            container.innerHTML = `<span class="program-name-display" onclick="openProgramModal()" title="수정하려면 클릭하세요">${currentProgramName}</span>`;
+            container.innerHTML = `<div class="info-pill program-name-display" onclick="openProgramModal()" title="클릭하여 프로그램명 수정"><span class="pill-emoji">📺</span><span>${currentProgramName}</span></div>`;
         } else {
-            container.innerHTML = `<button id="program-name-btn" onclick="openProgramModal()">✅ 프로그램 제목을 입력해주세요</button>`;
+            container.innerHTML = `<button id="program-name-btn" class="info-pill" onclick="openProgramModal()"><span class="pill-emoji">📺</span>프로그램 제목을 입력해주세요</button>`;
         }
     }
 
-    // 장소 모달 로직 추가
     function openLocationModal() {
         document.getElementById('modal-location-input').value = currentLocationName;
         document.getElementById('location-modal').style.display = 'flex';
@@ -510,13 +672,12 @@
     function updateLocationDisplay() {
         const container = document.getElementById('location-name-container');
         if (currentLocationName) {
-            container.innerHTML = `<span class="location-name-display" onclick="openLocationModal()" title="수정하려면 클릭하세요">📍 ${currentLocationName}</span>`;
+            container.innerHTML = `<div class="info-pill location-name-display" onclick="openLocationModal()" title="클릭하여 장소 수정"><span class="pill-emoji">📍</span><span>${currentLocationName}</span></div>`;
         } else {
-            container.innerHTML = `<button id="location-name-btn" onclick="openLocationModal()">📍 장소를 입력해 주세요</button>`;
+            container.innerHTML = `<button id="location-name-btn" class="info-pill" onclick="openLocationModal()"><span class="pill-emoji">📍</span>장소를 입력해 주세요</button>`;
         }
     }
 
-    // 메모 모달 로직
     function openMemoModal(categoryIdx, memoIdx = -1) {
         currentCategoryIndex = categoryIdx;
         currentSubMemoIndex = memoIdx;
@@ -575,9 +736,8 @@
         });
     }
 
-    // 항목 체크 토글 함수
     function toggleCheck(cIdx, iIdx) {
-        categoryChecked[cIdx][iIdx] = !categoryChecked[cIdx][iIdx]; // 상태 반전
+        categoryChecked[cIdx][iIdx] = !categoryChecked[cIdx][iIdx]; 
         const wrap = document.getElementById(`item-wrap-${cIdx}-${iIdx}`);
         
         if (categoryChecked[cIdx][iIdx]) {
@@ -589,27 +749,26 @@
         saveAndUpdate();
     }
 
-    // 초기화 모달 로직
     function openResetModal() { document.getElementById('reset-modal').style.display = 'flex'; }
     
     function executeReset() {
         categoryMemos = new Array(checklistData.length).fill().map(() => []);
-        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); // 체크 해제 반영
+        categoryPhotos = new Array(checklistData.length).fill().map(() => []);
+        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); 
         currentProgramName = "";
-        currentLocationName = ""; // 장소 리셋 추가
+        currentLocationName = ""; 
         
         updateProgramDisplay();
-        updateLocationDisplay();  // 장소 디스플레이 리셋 추가
+        updateLocationDisplay();  
         updateAllMemoDisplays();
+        updateAllPhotoDisplays();
         
-        // 화면상에 있는 모든 취소선/체크 디자인 즉시 리셋
         document.querySelectorAll('.item-wrapper.checked').forEach(el => el.classList.remove('checked'));
         
         saveAndUpdate();
         closeModal('reset-modal');
     }
 
-    // 알림 모달 로직
     function openAlertModal(message, isPrintFallback = false, title = "안내") {
         document.getElementById('alert-modal-title').innerText = title;
         document.getElementById('alert-modal-message').innerHTML = message;
@@ -627,15 +786,17 @@
         window.print();
     }
 
-    // 단축키 제어
     document.addEventListener('keydown', function(e) {
-        // location-modal 추가
-        const modals = ['program-modal', 'location-modal', 'memo-modal', 'reset-modal', 'alert-modal'];
+        const modals = ['program-modal', 'location-modal', 'memo-modal', 'reset-modal', 'alert-modal', 'photo-upload-modal', 'photo-detail-modal'];
         const openModalId = modals.find(id => document.getElementById(id).style.display === 'flex');
 
-        if (e.key === 'Escape' && openModalId) closeModal(openModalId);
+        if (e.key === 'Escape' && openModalId) {
+            if (openModalId === 'photo-upload-modal') closePhotoModal();
+            else if (openModalId === 'photo-detail-modal') closePhotoDetail();
+            else closeModal(openModalId);
+        }
         
-        if (e.key === 'Enter' && openModalId && openModalId !== 'memo-modal') {
+        if (e.key === 'Enter' && openModalId && openModalId !== 'memo-modal' && openModalId !== 'photo-upload-modal') {
             e.preventDefault();
             if (openModalId === 'program-modal') applyProgramName();
             else if (openModalId === 'location-modal') applyLocationName();
@@ -652,10 +813,9 @@
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
-    // 초기 렌더링
     function renderChecklist() {
         categoryMemos = new Array(checklistData.length).fill().map(() => []);
-        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); // 체크 초기화
+        categoryChecked = checklistData.map(c => new Array(c.items.length).fill(false)); 
         
         const container = document.getElementById('checklist-container');
         
@@ -674,7 +834,6 @@
             const subTextHTML = (item) => item.subText 
                 ? `<span class="item-subtext">${item.subText}</span>` : '';
 
-            // 4. 클릭 이벤트(onclick)와 고유 ID, 타이틀 내부 래퍼(item-title-text) 부여
             const itemsHTML = category.items.map((item, itemIdx) => `
                 <div class="item-wrapper" id="item-wrap-${index}-${itemIdx}">
                     <div class="item-content" onclick="toggleCheck(${index}, ${itemIdx})">
@@ -694,12 +853,16 @@
                         <h2 class="card-title">${category.title}</h2>
                     </div>
                     <div class="card-header-right">
-                        <button class="btn-add-memo" onclick="openMemoModal(${index})">+ 메모</button>
+                        ${category.isPhoto 
+                            ? `<button class="btn-add-memo" onclick="openPhotoModal(${index})">+ 사진</button>`
+                            : `<button class="btn-add-memo" onclick="openMemoModal(${index})">+ 메모</button>`
+                        }
                     </div>
                 </div>
                 <div class="card-body">
                     ${itemsHTML}
                     <div id="memo-container-${index}" style="margin-top: 18px; display: flex; flex-direction: column; gap: 8px;"></div>
+                    ${category.isPhoto ? `<div id="photo-container-${index}" class="photo-grid"></div>` : ''}
                 </div>
             `;
             container.appendChild(card);
@@ -712,12 +875,13 @@
         try {
             localStorage.setItem('surveyChecklistStateV8', JSON.stringify({ 
                 memos: categoryMemos, 
+                photos: categoryPhotos, 
                 programName: currentProgramName,
-                locationName: currentLocationName, // 장소 저장 추가
+                locationName: currentLocationName, 
                 checked: categoryChecked 
             }));
         } catch (error) {
-            console.warn("카카오톡 등 일부 환경에서는 데이터 자동 저장이 제한될 수 있습니다.", error);
+            console.warn("데이터 자동 저장 제한:", error);
         }
     }
 
@@ -730,30 +894,28 @@
         
         if (savedState) {
             if (savedState.memos) categoryMemos = savedState.memos;
+            if (savedState.photos) categoryPhotos = savedState.photos;
             if (savedState.programName) {
                 currentProgramName = savedState.programName;
                 updateProgramDisplay();
             }
-            if (savedState.locationName) { // 장소 로드 추가
+            if (savedState.locationName) { 
                 currentLocationName = savedState.locationName;
                 updateLocationDisplay();
             }
-            // 기존 사용자 호환성 유지: 체크 데이터가 있으면 가져옴
             if (savedState.checked) {
                 categoryChecked = savedState.checked;
             }
         }
 
-        // 배열 길이가 맞지 않는 경우(새로운 카테고리가 추가된 경우 등) 대응
         while (categoryMemos.length < checklistData.length) categoryMemos.push([]);
+        while (categoryPhotos.length < checklistData.length) categoryPhotos.push([]);
         while (categoryChecked.length < checklistData.length) categoryChecked.push([]);
         
         checklistData.forEach((category, cIdx) => {
-            // 체크 상태 갯수 보정
             while (categoryChecked[cIdx].length < category.items.length) {
                 categoryChecked[cIdx].push(false);
             }
-            // DOM에 체크 상태 반영
             category.items.forEach((_, iIdx) => {
                 const wrap = document.getElementById(`item-wrap-${cIdx}-${iIdx}`);
                 if (wrap) {
@@ -764,7 +926,166 @@
         });
         
         updateAllMemoDisplays();
+        updateAllPhotoDisplays();
         saveAndUpdate(); 
+    }
+
+    function updateAllPhotoDisplays() {
+        checklistData.forEach((category, cIdx) => {
+            if (category.isPhoto) {
+                renderPhotos(cIdx);
+            }
+        });
+    }
+
+    function openPhotoModal(idx, pIdx = null) {
+        currentPhotoCategoryIndex = idx;
+        currentDetailPhotoIndex = pIdx;
+        
+        if (pIdx !== null) {
+            const photo = categoryPhotos[idx][pIdx];
+            document.getElementById('photo-title-input').value = photo.title || '';
+            document.getElementById('photo-memo-input').value = photo.memo || '';
+            document.getElementById('btn-save-photo').innerText = '수정';
+        } else {
+            document.getElementById('photo-title-input').value = '';
+            document.getElementById('photo-file-input').value = '';
+            document.getElementById('photo-memo-input').value = '';
+            document.getElementById('btn-save-photo').innerText = '추가';
+        }
+        document.getElementById('photo-upload-modal').style.display = 'flex';
+    }
+
+    function closePhotoModal() {
+        document.getElementById('photo-upload-modal').style.display = 'none';
+        currentPhotoCategoryIndex = null;
+        currentDetailPhotoIndex = null;
+    }
+
+    function savePhoto() {
+        if (currentPhotoCategoryIndex === null) return;
+        const title = document.getElementById('photo-title-input').value.trim();
+        const fileInput = document.getElementById('photo-file-input');
+        const memo = document.getElementById('photo-memo-input').value.trim();
+
+        if (!title) {
+            openAlertModal("사진 제목을 입력해주세요.");
+            return;
+        }
+        
+        const isEdit = (currentDetailPhotoIndex !== null);
+
+        if (!isEdit && (!fileInput.files || fileInput.files.length === 0)) {
+            openAlertModal("사진을 첨부해주세요.");
+            return;
+        }
+
+        const finishSave = (dataUrl) => {
+            if (isEdit) {
+                categoryPhotos[currentPhotoCategoryIndex][currentDetailPhotoIndex] = { title, data: dataUrl, memo };
+            } else {
+                categoryPhotos[currentPhotoCategoryIndex].push({ title, data: dataUrl, memo });
+            }
+            saveAndUpdate();
+            renderPhotos(currentPhotoCategoryIndex);
+            closePhotoModal();
+        };
+
+        if (fileInput.files && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const max_size = 800; 
+                    if (width > height) {
+                        if (width > max_size) {
+                            height *= max_size / width;
+                            width = max_size;
+                        }
+                    } else {
+                        if (height > max_size) {
+                            width *= max_size / height;
+                            height = max_size;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    finishSave(canvas.toDataURL('image/jpeg', 0.7));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // 수정 시 사진 파일이 첨부되지 않았다면 기존 사진 유지
+            finishSave(categoryPhotos[currentPhotoCategoryIndex][currentDetailPhotoIndex].data);
+        }
+    }
+
+    function renderPhotos(cIdx) {
+        const container = document.getElementById(`photo-container-${cIdx}`);
+        if (!container) return;
+        
+        const photos = categoryPhotos[cIdx];
+        if (!photos || photos.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = photos.map((photo, pIdx) => `
+            <div class="photo-item" onclick="openPhotoDetail(${cIdx}, ${pIdx})">
+                <div class="photo-item-title">${photo.title}</div>
+                <img src="${photo.data}" class="photo-item-img" alt="${photo.title}" />
+                ${photo.memo ? `<div class="photo-item-memo">${photo.memo}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function openPhotoDetail(cIdx, pIdx) {
+        currentDetailCategory = cIdx;
+        currentDetailPhotoIndex = pIdx;
+        const photo = categoryPhotos[cIdx][pIdx];
+        
+        document.getElementById('photo-detail-title').innerText = photo.title;
+        document.getElementById('photo-detail-img').src = photo.data;
+        const memoEl = document.getElementById('photo-detail-memo');
+        if (photo.memo) {
+            memoEl.style.display = 'block';
+            memoEl.innerText = photo.memo;
+        } else {
+            memoEl.style.display = 'none';
+        }
+
+        const btnDelete = document.getElementById('btn-delete-photo');
+        btnDelete.onclick = function() {
+            deletePhoto(cIdx, pIdx);
+        };
+
+        const btnEdit = document.getElementById('btn-edit-photo');
+        btnEdit.onclick = function() {
+            closePhotoDetail();
+            openPhotoModal(cIdx, pIdx);
+        };
+
+        document.getElementById('photo-detail-modal').style.display = 'flex';
+    }
+
+    function closePhotoDetail() {
+        document.getElementById('photo-detail-modal').style.display = 'none';
+        currentDetailCategory = null;
+        currentDetailPhotoIndex = null;
+    }
+
+    function deletePhoto(cIdx, pIdx) {
+        categoryPhotos[cIdx].splice(pIdx, 1);
+        saveAndUpdate();
+        renderPhotos(cIdx);
+        closePhotoDetail();
     }
 
     /** 
