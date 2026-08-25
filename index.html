@@ -19,10 +19,11 @@
             --text-muted: #64748b;
         }
 
-        /* ---------------- 공통 및 배경 ---------------- */
+/* ---------------- 공통 및 배경 ---------------- */
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%; /* 아이폰 폰트 자동 확대 방지 (PDF 레이아웃 깨짐 해결) */
         }
         body {
             background-color: var(--bg-color);
@@ -366,6 +367,14 @@
         }
         .pdf-export-mode .header-main-row { flex-direction: row !important; }
         .pdf-export-mode .header h1 { font-size: 34px !important; }
+        
+        /* ---------------- 결과 이미지 다운로드 안내 모달 ---------------- */
+        #result-image-modal { z-index: 2000; }
+        #result-image-modal .modal-content { max-width: 90%; width: 500px; text-align: center; }
+        #result-image-modal h3 { color: #fff; margin-top: 0; font-size: 18px; margin-bottom: 12px; }
+        #result-image-modal p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5; word-break: keep-all; }
+        #generated-result-image { width: 100%; max-height: 60vh; object-fit: contain; border-radius: 8px; margin-bottom: 20px; background: #fff; }
+        
         /* ---------------- 미디어 쿼리 & 프린트 ---------------- */
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
@@ -550,6 +559,18 @@
         <h3 id="alert-modal-title">알림</h3>
         <p id="alert-modal-message" style="color: var(--text-sub); margin-bottom: 24px; font-size: 15px; line-height: 1.5;"></p>
         <div class="modal-actions center" id="alert-modal-actions"></div>
+    </div>
+</div>
+
+<!-- 모바일 전용 결과 이미지 안내 모달 -->
+<div class="modal-overlay" id="result-image-modal" style="display: none;">
+    <div class="modal-content">
+        <h3>✅ 이미지 생성 완료</h3>
+        <p>아래 이미지를 <strong>꾹 누른 후 '사진 앱에 저장'</strong>(또는 이미지 저장)을 선택하시면 갤러리에 정상적으로 저장됩니다.</p>
+        <img id="generated-result-image" src="" alt="생성된 체크리스트">
+        <div class="modal-actions center">
+            <button class="modal-btn btn-cancel" onclick="closeModal('result-image-modal')">닫기</button>
+        </div>
     </div>
 </div>
 
@@ -812,7 +833,7 @@
     }
 
     document.addEventListener('keydown', function(e) {
-        const modals = ['program-modal', 'location-modal', 'memo-modal', 'reset-modal', 'alert-modal', 'photo-upload-modal', 'photo-detail-modal'];
+        const modals = ['program-modal', 'location-modal', 'memo-modal', 'reset-modal', 'alert-modal', 'photo-upload-modal', 'photo-detail-modal', 'result-image-modal'];
         const openModalId = modals.find(id => document.getElementById(id).style.display === 'flex');
 
         if (e.key === 'Escape' && openModalId) {
@@ -1201,21 +1222,27 @@
                 element.style.overflow = 'hidden'; 
 
                 html2canvas(element, { 
-                    scale: 2, 
-                    backgroundColor: '#0b0d14', 
-                    useCORS: true, 
-                    scrollY: 0, 
-                    scrollX: 0, 
-                    width: targetWidth, 
-                    height: targetHeight,
-                    windowWidth: targetWidth // 핵심: 모바일 기기를 PC 해상도로 속임
+                    scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: targetWidth, height: targetHeight,
+                    windowWidth: targetWidth
                 }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/png');
-                    link.download = currentProgramName ? `${currentProgramName}_사전답사.png` : '사전답사.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    const imgData = canvas.toDataURL('image/png');
+                    
+                    // 모바일 기기인지 판별
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    if (isMobile) {
+                        // 모바일에서는 화면에 띄워주고 '길게 눌러 저장' 유도 (카카오톡 및 iOS 사파리 대응)
+                        document.getElementById('generated-result-image').src = imgData;
+                        document.getElementById('result-image-modal').style.display = 'flex';
+                    } else {
+                        // PC에서는 파일로 즉시 다운로드
+                        const link = document.createElement('a');
+                        link.href = imgData;
+                        link.download = currentProgramName ? `${currentProgramName}_사전답사.png` : '사전답사.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
                     restore();
                 }).catch(err => {
                     console.error("이미지 생성 에러:", err);
