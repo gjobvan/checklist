@@ -343,15 +343,27 @@
                 radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
             display: flex !important; flex-direction: column !important;
             align-items: center !important; padding: 40px 20px !important;
-            /* 모바일에서도 강제로 PC 해상도(1100px)를 유지하도록 잠금 */
+            /* 모바일에서도 강제로 PC 해상도(1100px)를 완벽하게 유지 */
             width: 1100px !important; 
+            min-width: 1100px !important;
             max-width: none !important;
         }
-        .pdf-export-mode .container { width: 100% !important; max-width: 1100px !important; margin: 0 !important; }
+        .pdf-export-mode .container { width: 1100px !important; max-width: 1100px !important; margin: 0 auto !important; }
+        
+        /* 그리드 강제 3단 배열 (모바일 세로 나열 방지) */
+        .pdf-export-mode .grid { 
+            display: flex !important; flex-wrap: wrap !important; flex-direction: row !important; 
+        }
+        .pdf-export-mode .card { 
+            flex: 1 1 320px !important; max-width: calc(33.333% - 20px) !important; 
+        }
+        .pdf-export-mode .card-full { 
+            flex: 1 1 100% !important; max-width: 100% !important; 
+        }
+
         .pdf-export-mode .header-text, .pdf-export-mode .program-name-display, .pdf-export-mode .location-name-display {
             background: none !important; -webkit-text-fill-color: #f8fafc !important; color: #f8fafc !important;
         }
-        /* 모바일 헤더가 세로로 깨지지 않도록 강제 가로 정렬 */
         .pdf-export-mode .header-main-row { flex-direction: row !important; }
         .pdf-export-mode .header h1 { font-size: 34px !important; }
         /* ---------------- 미디어 쿼리 & 프린트 ---------------- */
@@ -1125,19 +1137,17 @@
         }
         return element;
     }
-
-function downloadPDF() {
+    
+    function downloadPDF() {
         const btnText = document.getElementById('text-pdf');
         const originalText = btnText.innerText;
         btnText.innerText = '⏳ 렌더링 중...';
         const element = toggleExportState(true);
         document.fonts.ready.then(() => {
             setTimeout(() => {
-                // 모바일에서도 PC 화면(1100px) 기준으로 렌더링하도록 폭 강제 고정
                 const targetWidth = 1100;
                 element.style.width = targetWidth + 'px';
                 
-                // 너비가 늘어난 상태의 재배치된 높이를 다시 측정
                 const rect = element.getBoundingClientRect();
                 const targetHeight = rect.height;
                 element.style.height = targetHeight + 'px';
@@ -1147,7 +1157,16 @@ function downloadPDF() {
                     margin: 0,
                     filename: currentProgramName ? `${currentProgramName}_사전답사.pdf` : '사전답사.pdf',
                     image: { type: 'jpeg', quality: 1 },
-                    html2canvas: { scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: targetWidth, height: targetHeight }, 
+                    html2canvas: { 
+                        scale: 2, 
+                        backgroundColor: '#0b0d14', 
+                        useCORS: true, 
+                        scrollY: 0, 
+                        scrollX: 0, 
+                        width: targetWidth, 
+                        height: targetHeight,
+                        windowWidth: targetWidth // 핵심: 모바일 기기를 PC 해상도로 속임
+                    }, 
                     jsPDF: { unit: 'px', format: [targetWidth, targetHeight], orientation: targetHeight > targetWidth ? 'portrait' : 'landscape' }
                 };
 
@@ -1182,7 +1201,14 @@ function downloadPDF() {
                 element.style.overflow = 'hidden'; 
 
                 html2canvas(element, { 
-                    scale: 2, backgroundColor: '#0b0d14', useCORS: true, scrollY: 0, scrollX: 0, width: targetWidth, height: targetHeight
+                    scale: 2, 
+                    backgroundColor: '#0b0d14', 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    scrollX: 0, 
+                    width: targetWidth, 
+                    height: targetHeight,
+                    windowWidth: targetWidth // 핵심: 모바일 기기를 PC 해상도로 속임
                 }).then(canvas => {
                     const link = document.createElement('a');
                     link.href = canvas.toDataURL('image/png');
