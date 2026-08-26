@@ -6,7 +6,7 @@
     <title>중계 사전답사 체크리스트</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -344,8 +344,7 @@
                 radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
             display: flex !important; flex-direction: column !important;
             align-items: center !important; 
-            padding: 40px !important; /* 상하좌우 여백 40px로 균형 맞춤 */
-            /* 1100px 콘텐츠가 잘리지 않도록 캔버스 너비를 1180px로 확장 */
+            padding: 40px !important;
             width: 1180px !important; 
             min-width: 1180px !important;
             max-width: none !important;
@@ -358,14 +357,10 @@
             display: flex !important; flex-wrap: wrap !important; flex-direction: row !important; 
         }
         .pdf-export-mode .card { 
-            flex: 1 1 320px !important; max-width: calc(33.333% - 18.66px) !important; /* 간격(gap) 정밀 보정 */
+            flex: 1 1 320px !important; max-width: calc(33.333% - 18.66px) !important;
         }
         .pdf-export-mode .card-full { 
             flex: 1 1 100% !important; max-width: 100% !important; 
-        }
-
-        .pdf-export-mode .header-text, .pdf-export-mode .program-name-display, .pdf-export-mode .location-name-display {
-            background: none !important; -webkit-text-fill-color: #f8fafc !important; color: #f8fafc !important;
         }
         .pdf-export-mode .header-main-row { flex-direction: row !important; }
         .pdf-export-mode .header h1 { font-size: 34px !important; }
@@ -384,7 +379,32 @@
             .header h1 { font-size: 28px; }
             .header-main-row { flex-direction: column; gap: 14px; }
             .header-spacer, .progress-wrapper-right { display: none; }
-        }       
+            
+            /* 모바일 컨트롤 버튼 예쁘게 정렬 (윗줄 3개, 아랫줄 2개) */
+            .controls {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            .btn-action {
+                padding: 10px 4px;
+                font-size: 13.5px;
+                justify-content: center;
+                gap: 4px;
+            }
+            .btn-action svg {
+                width: 16px; height: 16px; /* 아이콘 크기를 모바일에 맞게 살짝 축소 */
+            }
+            
+            /* 버튼 시각적 배치 순서(order) 및 너비 지정 */
+            .btn-pdf { order: 1; flex: 1 1 calc(33.333% - 8px); }
+            .btn-image { order: 2; flex: 1 1 calc(33.333% - 8px); }
+            .btn-reset { order: 3; flex: 1 1 calc(33.333% - 8px); }
+            
+            .btn-import { order: 4; flex: 1 1 calc(50% - 8px); max-width: calc(50% - 4px); }
+            .btn-export { order: 5; flex: 1 1 calc(50% - 8px); max-width: calc(50% - 4px); }
+        } 
         @media print {
             body, #pdf-wrapper {
                 background: #0b0d14 !important; color: #f8fafc !important;
@@ -469,8 +489,16 @@
 </head>
 <body>
 
-<div class="container" style="padding-top: 10px;">
-    <div class="controls" id="action-controls">
+<div class="controls" id="action-controls" style="flex-wrap: wrap;">
+        <!-- 데이터 가져오기용 숨김 input -->
+        <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importData(event)">
+        
+        <button class="btn-action btn-export" onclick="exportData()" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: rgba(168, 85, 247, 0.3);">
+            📤 내보내기
+        </button>
+        <button class="btn-action btn-import" onclick="document.getElementById('import-file-input').click()" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">
+            📥 불러오기
+        </button>
         <button class="btn-action btn-pdf" onclick="downloadPDF()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span id="text-pdf">PDF</span>
@@ -1132,6 +1160,63 @@
         closePhotoDetail();
     }
 
+    /* ---------------- 데이터 내보내기 / 불러오기 ---------------- */
+    function exportData() {
+        const data = localStorage.getItem('surveyChecklistStateV8');
+        if (!data) {
+            openAlertModal("내보낼 데이터가 없습니다.");
+            return;
+        }
+        
+        // YYYYMMDD_HHMMSS 형식의 타임스탬프 생성
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
+        
+        // 파일명: 프로그램명_백업데이터_YYYYMMDD_HHMMSS.json
+        const progName = currentProgramName ? currentProgramName : '사전답사';
+        const fileName = `${progName}_백업데이터_${timestamp}.json`;
+        
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (importedData && importedData.memos && importedData.checked) {
+                    localStorage.setItem('surveyChecklistStateV8', JSON.stringify(importedData));
+                    loadState(); // 화면 즉시 새로고침
+                    openAlertModal("데이터를 성공적으로 불러왔습니다!");
+                } else {
+                    throw new Error("Invalid format");
+                }
+            } catch (error) {
+                console.error("데이터 불러오기 에러:", error);
+                openAlertModal("유효하지 않은 데이터 백업 파일입니다.");
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = ''; // 동일한 파일 다시 선택 가능하도록 초기화
+    }
+
     /** 
      * ==========================================
      * 출력 (PDF / PNG) 공통 모듈
@@ -1161,45 +1246,50 @@
         return element;
     }
     
-function downloadPDF() {
+    function downloadPDF() {
         const btnText = document.getElementById('text-pdf');
         const originalText = btnText.innerText;
         btnText.innerText = '⏳ 렌더링 중...';
         const element = toggleExportState(true);
+        
         document.fonts.ready.then(() => {
             setTimeout(() => {
-                const targetWidth = 1180; // 캔버스 너비를 1180px로 확장하여 잘림 방지
+                const targetWidth = 1180; 
                 element.style.width = targetWidth + 'px';
-                
-                const rect = element.getBoundingClientRect();
-                const targetHeight = rect.height;
-                element.style.height = targetHeight + 'px';
-                element.style.overflow = 'hidden'; 
 
-                const opt = {
-                    margin: 0,
-                    filename: currentProgramName ? `${currentProgramName}_사전답사.pdf` : '사전답사.pdf',
-                    image: { type: 'jpeg', quality: 1 },
-                    html2canvas: { 
-                        scale: 2, 
-                        backgroundColor: '#0b0d14', 
-                        useCORS: true, 
-                        scrollY: 0, 
-                        scrollX: 0, 
-                        width: targetWidth, 
-                        height: targetHeight,
-                        windowWidth: targetWidth 
-                    }, 
-                    jsPDF: { unit: 'px', format: [targetWidth, targetHeight], orientation: targetHeight > targetWidth ? 'portrait' : 'landscape' }
-                };
-
-                html2pdf().from(element).set(opt).save()
-                    .then(() => restore())
-                    .catch(err => {
-                        console.error("PDF 생성 에러:", err);
-                        restore();
-                        openAlertModal("기기 환경에 의해 PDF 자동 변환이 차단되었습니다.<br><br>아래 <b>[인쇄하기]</b> 버튼을 누른 후, 옵션에서 <b>'PDF로 저장'</b>을 선택해주세요.", true);
+                html2canvas(element, { 
+                    scale: 2, 
+                    backgroundColor: '#0b0d14', 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    scrollX: 0, 
+                    width: targetWidth, 
+                    windowWidth: targetWidth 
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdfWidth = canvas.width / 2;
+                    const pdfHeight = canvas.height / 2;
+                    
+                    // 최신 jsPDF 인스턴스 생성 (1:1 맞춤형 1페이지 도화지)
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
+                        unit: 'px',
+                        format: [pdfWidth, pdfHeight]
                     });
+                    
+                    // 여백 없이 100% 꽉 차게 단 1장으로 출력
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    
+                    const fileName = currentProgramName ? `${currentProgramName}_사전답사.pdf` : '사전답사.pdf';
+                    pdf.save(fileName);
+                    
+                    restore();
+                }).catch(err => {
+                    console.error("PDF 렌더링 에러:", err);
+                    restore();
+                    openAlertModal("기기 환경에 의해 PDF 생성이 차단되었습니다.");
+                });
             }, 150);
         });
 
@@ -1215,13 +1305,9 @@ function downloadPDF() {
 
         document.fonts.ready.then(() => {
             setTimeout(() => {
-                const targetWidth = 1180; // 캔버스 너비를 1180px로 확장하여 잘림 방지
+                const targetWidth = 1180; 
                 element.style.width = targetWidth + 'px';
-                
-                const rect = element.getBoundingClientRect();
-                const targetHeight = rect.height;
-                element.style.height = targetHeight + 'px';
-                element.style.overflow = 'hidden'; 
+                // 오류 유발 요인 제거: 높이 제약을 해제하여 하단이 잘릴 위험을 방지합니다.
 
                 html2canvas(element, { 
                     scale: 2, 
@@ -1230,7 +1316,6 @@ function downloadPDF() {
                     scrollY: 0, 
                     scrollX: 0, 
                     width: targetWidth, 
-                    height: targetHeight,
                     windowWidth: targetWidth
                 }).then(canvas => {
                     const imgData = canvas.toDataURL('image/png');
