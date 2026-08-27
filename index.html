@@ -11,26 +11,22 @@
 
     <style>
         :root, #pdf-wrapper {
-            --bg-color: #0b0d14;
-            --card-bg: #1e2029;
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --text-muted: #64748b;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --text-muted: #94a3b8;
         }
 
-/* ---------------- 공통 및 배경 ---------------- */
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            -webkit-text-size-adjust: 100%; /* 아이폰 폰트 자동 확대 방지 (PDF 레이아웃 깨짐 해결) */
+            -webkit-text-size-adjust: 100%;
         }
         body {
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
-            background-attachment: fixed;
+            background-image: none;
             color: var(--text-main);
             font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
             margin: 0;
@@ -53,7 +49,6 @@
             margin: 0 auto;
         }
 
-        /* ---------------- 헤더 ---------------- */
         .header { text-align: center; margin-bottom: 24px; }
         .header-main-row {
             display: flex; align-items: center; justify-content: space-between;
@@ -66,15 +61,12 @@
             gap: 12px; white-space: nowrap;
         }
         .header-text {
-            background: linear-gradient(135deg, #ffffff, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #0f172a;
         }
         .header-emoji {
-            font-size: 38px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            font-size: 38px;
         }
         
-        /* ---------------- 프로그램명 & 장소 배지 스타일 ---------------- */
         #info-container {
             display: flex;
             flex-direction: column;
@@ -93,17 +85,14 @@
             font-family: inherit;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             box-sizing: border-box;
         }
 
-        /* 1. 프로그램명 버튼 및 입력 후 표시 (부드러운 블루 톤) */
         #program-name-btn,
         .program-name-display {
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.35);
-            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #1d4ed8;
             font-size: 15px;
             font-weight: 600;
             padding: 8px 18px;
@@ -111,19 +100,17 @@
         }
         #program-name-btn:hover,
         .program-name-display:hover {
-            background: rgba(59, 130, 246, 0.22);
-            border-color: #60a5fa;
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
-            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
         }
 
-        /* 2. 장소 버튼 및 입력 후 표시 (부드러운 에메랄드 톤) */
         #location-name-btn,
         .location-name-display {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #047857;
             font-size: 14.5px;
             font-weight: 600;
             padding: 7px 16px;
@@ -131,25 +118,20 @@
         }
         #location-name-btn:hover,
         .location-name-display:hover {
-            background: rgba(16, 185, 129, 0.22);
-            border-color: #34d399;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
-            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
         }
 
         .info-pill .pill-emoji {
             font-size: 1.15em;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        /* ---------------- PDF / 이미지 캡처 전용 스타일 (텍스트 가림 완벽 해결) ---------------- */
         .pdf-export-mode .info-pill {
             display: inline-block !important;
             text-align: center !important;
             line-height: 22px !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
             box-shadow: none !important;
             transform: none !important;
             transition: none !important;
@@ -157,7 +139,6 @@
         .pdf-export-mode .info-pill .pill-emoji {
             display: inline-block !important;
             margin-right: 8px !important;
-            filter: none !important;
             vertical-align: middle !important;
         }
         .pdf-export-mode .info-pill span {
@@ -166,79 +147,75 @@
             background: transparent !important;
         }
         .pdf-export-mode .header-text {
-            background: none !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            color: #f8fafc !important;
+            color: #0f172a !important;
         }
         .pdf-export-mode .program-name-display {
-            background: #111927 !important;
+            background: #eff6ff !important;
             border: 1px solid #3b82f6 !important;
-            color: #93c5fd !important;
+            color: #1d4ed8 !important;
         }
         .pdf-export-mode .program-name-display span {
-            color: #93c5fd !important;
+            color: #1d4ed8 !important;
         }
         .pdf-export-mode .location-name-display {
-            background: #0d1e1a !important;
+            background: #ecfdf5 !important;
             border: 1px solid #10b981 !important;
-            color: #6ee7b7 !important;
+            color: #047857 !important;
         }
         .pdf-export-mode .location-name-display span {
-            color: #6ee7b7 !important;
+            color: #047857 !important;
         }
 
-        /* ---------------- 컨트롤 버튼 ---------------- */
         .controls {
             display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 24px;
         }
         .btn-action {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f8fafc; border: 1px solid #cbd5e1;
             color: var(--text-main); padding: 10px 18px; border-radius: 10px;
             font-family: inherit; font-size: 14.5px; font-weight: 600;
             cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
         }
-        .btn-action:hover { background: rgba(255, 255, 255, 0.1); }
-        .btn-pdf { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-        .btn-image { background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
-        .btn-reset { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
+        .btn-action:hover { background: #f1f5f9; }
+        .btn-pdf { background: rgba(59, 130, 246, 0.1); color: #1d4ed8; border-color: rgba(59, 130, 246, 0.3); }
+        .btn-image { background: rgba(16, 185, 129, 0.1); color: #047857; border-color: rgba(16, 185, 129, 0.3); }
+        .btn-reset { background: rgba(239, 68, 68, 0.08); color: #dc2626; border-color: rgba(239, 68, 68, 0.2); }
 
-        /* ---------------- 레이아웃 및 카드 ---------------- */
         .grid { display: flex; flex-wrap: wrap; gap: 28px; }
         .card {
             flex: 1 1 320px; max-width: 100%;
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px;
             padding: 30px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column; position: relative; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
         .card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-            background: var(--card-theme); opacity: 0.8;
+            background: var(--card-theme); opacity: 0.9;
         }
         .card:hover {
-            transform: translateY(-4px); border-color: var(--card-theme-hover);
-            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.4), 0 0 24px var(--card-theme-bg);
+            transform: translateY(-4px); border-color: var(--card-theme);
+            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.08), 0 0 24px var(--card-theme-bg);
         }
         .card-full { flex: 1 1 100%; }
         
         .card-header {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid #e2e8f0;
         }
         .card-header-left { display: flex; align-items: center; gap: 16px; }
         .card-icon {
             font-size: 26px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
             border-radius: 16px; background: var(--card-theme-bg); color: var(--card-theme); border: 1px solid var(--card-theme-border);
         }
-        .card-title { font-size: 23px; font-weight: 700; margin: 0; }
+        .card-title { font-size: 23px; font-weight: 700; margin: 0; color: #0f172a; }
         .btn-add-memo {
-            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f1f5f9; border: 1px solid #cbd5e1;
             color: var(--text-sub); padding: 6px 12px; border-radius: 6px;
             font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;
         }
-        .btn-add-memo:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+        .btn-add-memo:hover { background: #e2e8f0; color: #0f172a; }
         .card-body { display: flex; flex-direction: column; flex-grow: 1; }
 
-        /* ---------------- 리스트 아이템 (체크박스 스타일 포함) ---------------- */
         .item-wrapper { display: flex; flex-direction: column; margin-bottom: 14px; }
         .item-wrapper:last-child { margin-bottom: 0; }
         
@@ -262,7 +239,7 @@
         .item-text::before {
             content: ''; display: inline-flex; width: 14px; height: 14px;
             align-items: center; justify-content: center;
-            background: transparent; border: 2px solid var(--card-theme);
+            background: #ffffff; border: 2px solid var(--card-theme);
             border-radius: 4px; margin-top: 5px; margin-right: 12px; flex-shrink: 0; opacity: 0.9;
             transition: all 0.2s;
         }
@@ -290,35 +267,35 @@
         .item-wrapper.checked .item-text::before {
             background: var(--card-theme);
             content: '✓';
-            color: var(--card-bg);
+            color: #ffffff;
             font-size: 11px;
             font-weight: 900;
         }
 
         .category-memo-display {
-            margin-top: 18px; padding: 14px; background: rgba(255, 255, 255, 0.05);
+            margin-top: 18px; padding: 14px; background: #f8fafc;
             border-left: 3px solid var(--card-theme); border-radius: 8px; color: var(--text-main);
             font-size: 15px; line-height: 1.5; cursor: pointer; white-space: pre-wrap; transition: background 0.2s;
+            border: 1px solid #e2e8f0; border-left-width: 3px;
         }
-        .category-memo-display:hover { background: rgba(255, 255, 255, 0.08); }
+        .category-memo-display:hover { background: #f1f5f9; }
 
-        /* ---------------- 공통 모달 ---------------- */
         #alert-modal { z-index: 1100; }
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
             display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
         .modal-content {
-            background: #1e2029; border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff; border: 1px solid #cbd5e1;
             border-radius: 16px; padding: 24px; width: 90%; max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
         .modal-content.text-center { text-align: center; }
-        .modal-content h3 { margin: 0 0 16px 0; font-size: 18px; color: #fff; }
+        .modal-content h3 { margin: 0 0 16px 0; font-size: 18px; color: #0f172a; }
         .modal-input {
-            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 12px; border-radius: 8px; font-size: 16px;
+            width: 100%; background: #f8fafc; border: 1px solid #cbd5e1;
+            color: #0f172a; padding: 12px; border-radius: 8px; font-size: 16px;
             margin-bottom: 20px; font-family: inherit;
         }
         .modal-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
@@ -329,19 +306,16 @@
             padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;
             cursor: pointer; border: none; transition: all 0.2s;
         }
-        .btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; }
-        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        .btn-cancel { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .btn-cancel:hover { background: #e2e8f0; }
         .btn-save { background: #3b82f6; color: #fff; }
         .btn-save:hover { background: #2563eb; }
         .btn-danger { background: #ef4444; color: #fff; }
         .btn-danger:hover { background: #dc2626; }
 
-        /* ---------------- PDF Export용 특별 스타일 ---------------- */
         .pdf-export-mode .btn-add-memo { display: none !important; }
         .pdf-export-mode {
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
+            background-image: none !important;
             display: flex !important; flex-direction: column !important;
             align-items: center !important; 
             padding: 40px !important;
@@ -352,7 +326,6 @@
         }
         .pdf-export-mode .container { width: 1100px !important; max-width: 1100px !important; margin: 0 auto !important; }
         
-        /* 그리드 강제 3단 배열 (모바일 세로 나열 방지) */
         .pdf-export-mode .grid { 
             display: flex !important; flex-wrap: wrap !important; flex-direction: row !important; 
         }
@@ -365,14 +338,12 @@
         .pdf-export-mode .header-main-row { flex-direction: row !important; }
         .pdf-export-mode .header h1 { font-size: 34px !important; }
         
-        /* ---------------- 결과 이미지 다운로드 안내 모달 ---------------- */
         #result-image-modal { z-index: 2000; }
         #result-image-modal .modal-content { max-width: 90%; width: 500px; text-align: center; }
-        #result-image-modal h3 { color: #fff; margin-top: 0; font-size: 18px; margin-bottom: 12px; }
+        #result-image-modal h3 { color: #0f172a; margin-top: 0; font-size: 18px; margin-bottom: 12px; }
         #result-image-modal p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5; word-break: keep-all; }
-        #generated-result-image { width: 100%; max-height: 60vh; object-fit: contain; border-radius: 8px; margin-bottom: 20px; background: #fff; }
+        #generated-result-image { width: 100%; max-height: 60vh; object-fit: contain; border-radius: 8px; margin-bottom: 20px; background: #fff; border: 1px solid #cbd5e1; }
         
-        /* ---------------- 미디어 쿼리 & 프린트 ---------------- */
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
             body { padding: 20px 16px 60px; }
@@ -380,41 +351,48 @@
             .header-main-row { flex-direction: column; gap: 14px; }
             .header-spacer, .progress-wrapper-right { display: none; }
             
-            /* 모바일 컨트롤 버튼 예쁘게 정렬 (윗줄 3개, 아랫줄 2개) */
+            /* 버튼 모바일 최적화 (2줄, 3열 배열) */
             .controls {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+                width: 100%;
             }
             .btn-action {
-                padding: 10px 4px;
-                font-size: 13.5px;
-                justify-content: center;
-                gap: 4px;
+                padding: 12px 2px !important;
+                font-size: 12px !important;
+                letter-spacing: -0.5px;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 6px !important;
+                border-radius: 12px !important;
+                white-space: nowrap;
             }
             .btn-action svg {
-                width: 16px; height: 16px; /* 아이콘 크기를 모바일에 맞게 살짝 축소 */
+                width: 20px !important; height: 20px !important;
+            }
+            .btn-action span[style*="font-size: 18px"] {
+                font-size: 20px !important;
             }
             
-            /* 버튼 시각적 배치 순서(order) 및 너비 지정 */
-            .btn-pdf { order: 1; flex: 1 1 calc(33.333% - 8px); }
-            .btn-image { order: 2; flex: 1 1 calc(33.333% - 8px); }
-            .btn-reset { order: 3; flex: 1 1 calc(33.333% - 8px); }
+            .btn-pdf { order: 1; }
+            .btn-image { order: 2; }
+            .btn-reset { order: 3; }
             
-            .btn-import { order: 4; flex: 1 1 calc(50% - 8px); max-width: calc(50% - 4px); }
-            .btn-export { order: 5; flex: 1 1 calc(50% - 8px); max-width: calc(50% - 4px); }
+            .btn-theme { order: 4; }
+            .btn-export { order: 5; }
+            .btn-import { order: 6; }
         } 
         @media print {
             body, #pdf-wrapper {
-                background: #0b0d14 !important; color: #f8fafc !important;
+                background: #ffffff !important; color: #0f172a !important;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
             #action-controls, .btn-add-memo, .modal-overlay { display: none !important; }
-            .card { break-inside: avoid; page-break-inside: avoid; background: #1e2029 !important; }
+            .card { break-inside: avoid; page-break-inside: avoid; background: #ffffff !important; border: 1px solid #cbd5e1 !important; }
         }
     
-        /* 사진첨부 CSS */
         .photo-grid {
             display: flex;
             flex-wrap: wrap;
@@ -423,8 +401,8 @@
         }
         .photo-item {
             width: calc(33.333% - 6.666px);
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--card-border);
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 8px;
             display: flex;
@@ -434,7 +412,7 @@
             transition: border-color 0.2s;
         }
         .photo-item:hover {
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: #3b82f6;
         }
         .photo-item-title {
             font-size: 14.5px;
@@ -451,7 +429,7 @@
             aspect-ratio: 4/3;
             object-fit: cover;
             border-radius: 4px;
-            background: #000;
+            background: #e2e8f0;
         }
         .photo-item-memo {
             font-size: 13px;
@@ -463,15 +441,15 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /* ---------------- 사진 첨부 모달 신규 디자인 ---------------- */
+        
         .photo-modal-card {
-            background: #141724 !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
             border-radius: 24px !important;
             padding: 26px 24px 24px 24px !important;
             max-width: 420px !important;
             width: 90% !important;
-            box-shadow: 0 0 35px rgba(244, 63, 94, 0.18), 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
         }
 
         .photo-modal-header {
@@ -480,13 +458,13 @@
             justify-content: space-between;
             margin-bottom: 20px;
             padding-bottom: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .photo-modal-title {
             font-size: 20px;
             font-weight: 700;
-            color: #ffffff;
+            color: #0f172a;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -497,9 +475,9 @@
         }
 
         .photo-modal-close {
-            background: rgba(255, 255, 255, 0.08);
+            background: #f1f5f9;
             border: none;
-            color: #94a3b8;
+            color: #475569;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -512,8 +490,8 @@
             transition: all 0.2s;
         }
         .photo-modal-close:hover {
-            background: rgba(255, 255, 255, 0.18);
-            color: #ffffff;
+            background: #e2e8f0;
+            color: #0f172a;
             transform: scale(1.05);
         }
 
@@ -527,22 +505,22 @@
         .photo-form-label {
             font-size: 14px;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #1e293b;
             letter-spacing: -0.2px;
         }
 
         .photo-label-sub {
             font-size: 12.5px;
             font-weight: 400;
-            color: #94a3b8;
+            color: #64748b;
         }
 
         .photo-form-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 12px;
-            color: #ffffff;
+            color: #0f172a;
             padding: 12px 14px;
             font-size: 14.5px;
             font-family: inherit;
@@ -552,11 +530,11 @@
         .photo-form-input:focus {
             outline: none;
             border-color: #3b82f6;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
         .photo-form-input::placeholder {
-            color: #64748b;
+            color: #94a3b8;
             font-size: 14px;
         }
 
@@ -573,9 +551,9 @@
         }
 
         .btn-photo-file {
-            background: rgba(59, 130, 246, 0.18);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #1d4ed8;
             padding: 8px 16px;
             border-radius: 10px;
             font-size: 13.5px;
@@ -586,13 +564,13 @@
             flex-shrink: 0;
         }
         .btn-photo-file:hover {
-            background: rgba(59, 130, 246, 0.3);
-            border-color: #60a5fa;
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
         }
 
         .photo-file-name {
             font-size: 13.5px;
-            color: #94a3b8;
+            color: #64748b;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -612,12 +590,12 @@
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
         }
         .btn-photo-submit:hover {
             background: #2563eb;
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
         }
         .btn-photo-submit:active {
             transform: translateY(0);
@@ -633,48 +611,187 @@
             object-fit: contain;
             margin: 15px 0;
             border-radius: 6px;
-            background: #000;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
         }
         .photo-memo-text {
             color: var(--text-sub);
             font-size: 14px;
             line-height: 1.5;
-            background: rgba(0,0,0,0.2);
+            background: #f8fafc;
             padding: 10px;
             border-radius: 6px;
+            border: 1px solid #e2e8f0;
             white-space: pre-wrap;
         }
 
+        /* ---------------- 다크 모드 (어두운 배경) 오버라이드 ---------------- */
+        body.dark-theme, body.dark-theme #pdf-wrapper {
+            --bg-color: #0b0d14;
+            --card-bg: #1e2029;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --text-muted: #64748b;
+            background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                              radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+        }
+        body.dark-theme .header-text {
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        body.dark-theme #program-name-btn,
+        body.dark-theme .program-name-display {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.35);
+            color: #93c5fd;
+        }
+        body.dark-theme #program-name-btn:hover,
+        body.dark-theme .program-name-display:hover {
+            background: rgba(59, 130, 246, 0.22);
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+            color: #ffffff;
+        }
+        body.dark-theme #location-name-btn,
+        body.dark-theme .location-name-display {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            color: #6ee7b7;
+        }
+        body.dark-theme #location-name-btn:hover,
+        body.dark-theme .location-name-display:hover {
+            background: rgba(16, 185, 129, 0.22);
+            border-color: #34d399;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+            color: #ffffff;
+        }
+        
+        body.dark-theme .pdf-export-mode .program-name-display {
+            background: #111927 !important;
+            border: 1px solid #3b82f6 !important;
+            color: #93c5fd !important;
+        }
+        body.dark-theme .pdf-export-mode .program-name-display span { color: #93c5fd !important; }
+        body.dark-theme .pdf-export-mode .location-name-display {
+            background: #0d1e1a !important;
+            border: 1px solid #10b981 !important;
+            color: #6ee7b7 !important;
+        }
+        body.dark-theme .pdf-export-mode .location-name-display span { color: #6ee7b7 !important; }
+
+        body.dark-theme .btn-action {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        body.dark-theme .btn-action:hover { background: rgba(255, 255, 255, 0.1); }
+        body.dark-theme .btn-pdf { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+        body.dark-theme .btn-image { background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+        body.dark-theme .btn-reset { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
+        body.dark-theme .btn-export { background: rgba(168, 85, 247, 0.15) !important; color: #c084fc !important; border-color: rgba(168, 85, 247, 0.3) !important; }
+        body.dark-theme .btn-import { background: rgba(236, 72, 153, 0.15) !important; color: #f472b6 !important; border-color: rgba(236, 72, 153, 0.3) !important; }
+        body.dark-theme .btn-theme { background: rgba(255, 255, 255, 0.1) !important; color: #e2e8f0 !important; border-color: rgba(255, 255, 255, 0.2) !important; }
+
+        body.dark-theme .card-title { color: #ffffff; }
+        body.dark-theme .btn-add-memo {
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        body.dark-theme .btn-add-memo:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+        body.dark-theme .item-text::before { background: transparent; }
+        body.dark-theme .item-wrapper.checked .item-text::before { color: var(--card-bg); }
+
+        body.dark-theme .category-memo-display {
+            background: rgba(255, 255, 255, 0.05); border-left-width: 3px; border-color: var(--card-theme); border-style: solid;
+            border-top: none; border-right: none; border-bottom: none;
+        }
+        body.dark-theme .category-memo-display:hover { background: rgba(255, 255, 255, 0.08); }
+
+        body.dark-theme .modal-overlay { background: rgba(0, 0, 0, 0.6); }
+        body.dark-theme .modal-content {
+            background: #1e2029; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        body.dark-theme .modal-content h3 { color: #fff; }
+        body.dark-theme .modal-input {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff;
+        }
+        body.dark-theme .btn-cancel { background: rgba(255,255,255,0.1); color: #ccc; border-color: transparent; }
+        body.dark-theme .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+
+        body.dark-theme .pdf-export-mode {
+            background-color: #0b0d14 !important;
+            background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                              radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%) !important;
+        }
+
+        body.dark-theme #result-image-modal h3 { color: #fff; }
+        body.dark-theme #generated-result-image { background: #fff; border: none; }
+
+        body.dark-theme .photo-item {
+            background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border);
+        }
+        body.dark-theme .photo-item:hover { border-color: rgba(255, 255, 255, 0.3); }
+        body.dark-theme .photo-item-img { background: #000; }
+
+        body.dark-theme .photo-modal-card {
+            background: #141724 !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 0 35px rgba(244, 63, 94, 0.18), 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+        }
+        body.dark-theme .photo-modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        body.dark-theme .photo-modal-title { color: #ffffff; }
+        body.dark-theme .photo-modal-close {
+            background: rgba(255, 255, 255, 0.08); color: #94a3b8;
+        }
+        body.dark-theme .photo-modal-close:hover { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
+        body.dark-theme .photo-form-label { color: #e2e8f0; }
+        body.dark-theme .photo-input-bg { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
+        body.dark-theme .photo-form-input { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
+        body.dark-theme .photo-form-input:focus { background: rgba(0, 0, 0, 0.5); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        body.dark-theme .btn-photo-file {
+            background: rgba(59, 130, 246, 0.18); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa;
+        }
+        body.dark-theme .btn-photo-file:hover { background: rgba(59, 130, 246, 0.3); border-color: #60a5fa; }
+        
+        body.dark-theme #photo-detail-img { background: #000; border: none; }
+        body.dark-theme .photo-memo-text {
+            background: rgba(0,0,0,0.2); border: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="controls" id="action-controls" style="flex-wrap: wrap;">
-        <!-- 데이터 가져오기용 숨김 input -->
-        <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importData(event)">
-        
-        <button class="btn-action btn-export" onclick="exportData()" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: rgba(168, 85, 247, 0.3);">
-            📤 내보내기
-        </button>
-        <button class="btn-action btn-import" onclick="document.getElementById('import-file-input').click()" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border-color: rgba(236, 72, 153, 0.3);">
-            📥 불러오기
-        </button>
-        <button class="btn-action btn-pdf" onclick="downloadPDF()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span id="text-pdf">PDF</span>
-        </button>
-        <button class="btn-action btn-image" onclick="downloadImage()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <span id="text-image">이미지</span>
-        </button>
-        <button class="btn-action btn-reset" onclick="openResetModal()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            초기화
-        </button>
-    </div>
+    <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="importData(event)">
+    
+    <button class="btn-action btn-pdf" onclick="downloadPDF()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="text-pdf">PDF 다운</span>
+    </button>
+    <button class="btn-action btn-image" onclick="downloadImage()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span id="text-image">이미지 다운</span>
+    </button>
+    <button class="btn-action btn-reset" onclick="openResetModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>초기화</span>
+    </button>
+
+    <button class="btn-action btn-theme" onclick="toggleTheme()" style="background: #e2e8f0; color: #475569; border-color: #cbd5e1;">
+        <span style="font-size: 18px; line-height: 1;">🌓</span>
+        <span>테마 변경</span>
+    </button>
+    <button class="btn-action btn-export" onclick="exportData()" style="background: rgba(168, 85, 247, 0.1); color: #7e22ce; border-color: rgba(168, 85, 247, 0.3);">
+        <span style="font-size: 18px; line-height: 1;">📤</span>
+        <span>내보내기</span>
+    </button>
+    <button class="btn-action btn-import" onclick="document.getElementById('import-file-input').click()" style="background: rgba(236, 72, 153, 0.1); color: #be185d; border-color: rgba(236, 72, 153, 0.3);">
+        <span style="font-size: 18px; line-height: 1;">📥</span>
+        <span>불러오기</span>
+    </button>
 </div>
 
-<div id="pdf-wrapper" style="background-color: #0b0d14; padding: 40px 20px 40px 20px;">    
+<div id="pdf-wrapper" style="background-color: #ffffff; padding: 40px 20px 40px 20px;">    
     <div class="container">
         <div class="header">
             <div class="header-main-row">
@@ -698,7 +815,6 @@
     </div>
 </div>
 
-<!-- 모달 공통 영역 -->
 <div id="program-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <h3>프로그램명 입력</h3>
@@ -752,7 +868,6 @@
     </div>
 </div>
 
-<!-- 모바일 전용 결과 이미지 안내 모달 -->
 <div class="modal-overlay" id="result-image-modal" style="display: none;">
     <div class="modal-content">
         <h3>✅ 이미지 생성 완료</h3>
@@ -764,7 +879,6 @@
     </div>
 </div>
 
-<!-- 사진 업로드 모달 -->
 <div class="modal-overlay" id="photo-upload-modal" style="display: none;">
     <div class="modal-content photo-modal-card">
         <div class="photo-modal-header">
@@ -797,7 +911,7 @@
         <button class="btn-photo-submit" id="btn-save-photo" onclick="savePhoto()">첨부 완료</button>
     </div>
 </div>
-<!-- 사진 상세 모달 -->
+
 <div class="modal-overlay" id="photo-detail-modal" style="display: none;">
     <div class="modal-content">
         <h3 class="modal-title" id="photo-detail-title">사진 상세</h3>
@@ -813,6 +927,49 @@
 </div>
 
 <script>
+    function toggleTheme() {
+        const body = document.body;
+        if (body.classList.contains('dark-theme')) {
+            body.classList.remove('dark-theme');
+            localStorage.setItem('surveyTheme', 'light');
+            updateThemeUI('light');
+        } else {
+            body.classList.add('dark-theme');
+            localStorage.setItem('surveyTheme', 'dark');
+            updateThemeUI('dark');
+        }
+    }
+
+    function updateThemeUI(theme) {
+        const pdfWrapper = document.getElementById('pdf-wrapper');
+        if (theme === 'dark') {
+            pdfWrapper.style.backgroundColor = '#0b0d14';
+        } else {
+            pdfWrapper.style.backgroundColor = '#ffffff';
+        }
+        
+        const nameEl = document.getElementById('photo-file-name');
+        if(nameEl) {
+            if(nameEl.innerText === '선택된 파일 없음') {
+                nameEl.style.color = theme === 'dark' ? '#94a3b8' : '#64748b';
+            } else if(nameEl.innerText.includes('기존 사진')) {
+                nameEl.style.color = theme === 'dark' ? '#38bdf8' : '#2563eb';
+            } else {
+                nameEl.style.color = theme === 'dark' ? '#e2e8f0' : '#0f172a';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('surveyTheme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            updateThemeUI('dark');
+        } else {
+            updateThemeUI('light');
+        }
+    });
+
     const checklistData = [
         {
             title: "중계차", icon: "🚐", theme: "#3b82f6",
@@ -833,7 +990,7 @@
         {
             title: "음향", icon: "🎧", theme: "#ec4899",
             items: [
-                { text: "마이크", subItems: ["유·무선 / 핀·핸드", "Eff Mic 설치"] },               
+                { text: "마이크", subItems: ["유·무선 / 핀·핸드", "Eff Mic 설치"] },              
                 { text: "수음환경", subItems: ["공간 울림도", "소음 (바람, 에어컨 실외기 등)"] },
                 { text: "페이징", subItems: ["유선 / 무선"] },
                 { text: "인터컴", subItems: ["W/L-1, W/L-2, 인터컴 수량"] },
@@ -1079,9 +1236,8 @@
             card.className = category.isFullWidth ? 'card card-full' : 'card';
             
             card.style.setProperty('--card-theme', category.theme);
-            card.style.setProperty('--card-theme-bg', hexToRgba(category.theme, 0.15));
-            card.style.setProperty('--card-theme-border', hexToRgba(category.theme, 0.20));
-            card.style.setProperty('--card-theme-hover', hexToRgba(category.theme, 0.40));
+            card.style.setProperty('--card-theme-bg', hexToRgba(category.theme, 0.1));
+            card.style.setProperty('--card-theme-border', hexToRgba(category.theme, 0.25));
 
             const subItemsHTML = (item) => (item.subItems && item.subItems.length > 0) 
                 ? `<ul class="sub-list">${item.subItems.map(sub => `<li>${sub}</li>`).join('')}</ul>` : '';
@@ -1155,7 +1311,6 @@
             if (savedState.checked) categoryChecked = savedState.checked;
         }
 
-        // 최초 접속 시에도 2번 사진의 둥근 디자인(📺)으로 화면이 그려지도록 항상 호출
         updateProgramDisplay();
         updateLocationDisplay();
 
@@ -1194,10 +1349,10 @@
         const nameEl = document.getElementById('photo-file-name');
         if (file) {
             nameEl.innerText = file.name;
-            nameEl.style.color = '#e2e8f0';
+            nameEl.style.color = '#0f172a';
         } else {
             nameEl.innerText = '선택된 파일 없음';
-            nameEl.style.color = '#94a3b8';
+            nameEl.style.color = '#64748b';
         }
     }
 
@@ -1213,7 +1368,7 @@
             document.getElementById('photo-title-input').value = photo.title || '';
             document.getElementById('photo-file-input').value = '';
             nameEl.innerText = '기존 사진 유지됨 (변경시 선택)';
-            nameEl.style.color = '#38bdf8';
+            nameEl.style.color = '#2563eb';
             document.getElementById('photo-memo-input').value = photo.memo || '';
             headerText.innerText = '사진 수정';
             submitBtn.innerText = '수정 완료';
@@ -1221,7 +1376,7 @@
             document.getElementById('photo-title-input').value = '';
             document.getElementById('photo-file-input').value = '';
             nameEl.innerText = '선택된 파일 없음';
-            nameEl.style.color = '#94a3b8';
+            nameEl.style.color = '#64748b';
             document.getElementById('photo-memo-input').value = '';
             headerText.innerText = '사진 첨부';
             submitBtn.innerText = '첨부 완료';
@@ -1295,7 +1450,6 @@
             };
             reader.readAsDataURL(file);
         } else {
-            // 수정 시 사진 파일이 첨부되지 않았다면 기존 사진 유지
             finishSave(categoryPhotos[currentPhotoCategoryIndex][currentDetailPhotoIndex].data);
         }
     }
@@ -1361,7 +1515,6 @@
         closePhotoDetail();
     }
 
-    /* ---------------- 데이터 내보내기 / 불러오기 ---------------- */
     function exportData() {
         const data = localStorage.getItem('surveyChecklistStateV8');
         if (!data) {
@@ -1369,7 +1522,6 @@
             return;
         }
         
-        // YYYYMMDD_HHMMSS 형식의 타임스탬프 생성
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1379,7 +1531,6 @@
         const seconds = String(now.getSeconds()).padStart(2, '0');
         const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
         
-        // 파일명: 프로그램명_백업데이터_YYYYMMDD_HHMMSS.json
         const progName = currentProgramName ? currentProgramName : '사전답사';
         const fileName = `${progName}_백업데이터_${timestamp}.json`;
         
@@ -1404,7 +1555,7 @@
                 const importedData = JSON.parse(e.target.result);
                 if (importedData && importedData.memos && importedData.checked) {
                     localStorage.setItem('surveyChecklistStateV8', JSON.stringify(importedData));
-                    loadState(); // 화면 즉시 새로고침
+                    loadState(); 
                     openAlertModal("데이터를 성공적으로 불러왔습니다!");
                 } else {
                     throw new Error("Invalid format");
@@ -1415,14 +1566,9 @@
             }
         };
         reader.readAsText(file);
-        event.target.value = ''; // 동일한 파일 다시 선택 가능하도록 초기화
+        event.target.value = ''; 
     }
 
-    /** 
-     * ==========================================
-     * 출력 (PDF / PNG) 공통 모듈
-     * ==========================================
-     */
     function toggleExportState(isExporting) {
         const element = document.getElementById('pdf-wrapper');
         const controls = document.getElementById('action-controls');
@@ -1431,16 +1577,12 @@
 
         if (isExporting) {
             controls.style.display = 'none';
-            cards.forEach(c => { c.style.backdropFilter = 'none'; c.style.webkitBackdropFilter = 'none'; });
-            pills.forEach(p => { p.style.backdropFilter = 'none'; p.style.webkitBackdropFilter = 'none'; });
             element.classList.add('pdf-export-mode');
         } else {
             element.style.width = '';
             element.style.height = '';
             element.style.overflow = '';
             element.classList.remove('pdf-export-mode');
-            cards.forEach(c => { c.style.backdropFilter = ''; c.style.webkitBackdropFilter = ''; });
-            pills.forEach(p => { p.style.backdropFilter = ''; p.style.webkitBackdropFilter = ''; });
             controls.style.display = 'flex';
             document.querySelectorAll('iframe, .html2canvas-container').forEach(el => el.remove());
         }
@@ -1460,7 +1602,7 @@
 
                 html2canvas(element, { 
                     scale: 2, 
-                    backgroundColor: '#0b0d14', 
+                    backgroundColor: document.body.classList.contains('dark-theme') ? '#0b0d14' : '#ffffff', 
                     useCORS: true, 
                     scrollY: 0, 
                     scrollX: 0, 
@@ -1471,7 +1613,6 @@
                     const pdfWidth = canvas.width / 2;
                     const pdfHeight = canvas.height / 2;
                     
-                    // 최신 jsPDF 인스턴스 생성 (1:1 맞춤형 1페이지 도화지)
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF({
                         orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
@@ -1479,7 +1620,6 @@
                         format: [pdfWidth, pdfHeight]
                     });
                     
-                    // 여백 없이 100% 꽉 차게 단 1장으로 출력
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     
                     const fileName = currentProgramName ? `${currentProgramName}_사전답사.pdf` : '사전답사.pdf';
@@ -1508,11 +1648,10 @@
             setTimeout(() => {
                 const targetWidth = 1180; 
                 element.style.width = targetWidth + 'px';
-                // 오류 유발 요인 제거: 높이 제약을 해제하여 하단이 잘릴 위험을 방지합니다.
 
                 html2canvas(element, { 
                     scale: 2, 
-                    backgroundColor: '#0b0d14', 
+                    backgroundColor: document.body.classList.contains('dark-theme') ? '#0b0d14' : '#ffffff', 
                     useCORS: true, 
                     scrollY: 0, 
                     scrollX: 0, 
